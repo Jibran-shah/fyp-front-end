@@ -1,0 +1,11 @@
+import { useQuery } from "@tanstack/react-query";
+import { getServiceProviders } from "../../../api/modules/serviceProvider/serviceProvider.api";
+import { queryKeys } from "../../../utils/queryKeys";
+
+export const useServiceProviders = (filters = {}) => {
+  return useQuery({
+    queryKey: queryKeys.serviceProvider.list(filters),
+    queryFn: () => getServiceProviders(filters),
+    staleTime: 5 * 60 * 1000
+  });
+};
