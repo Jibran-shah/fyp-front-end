@@ -8,13 +8,17 @@ export const useRegister = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: register,
+    mutationFn: async (data) => {
+      console.log("🔥 MUTATION FIRED:", data);
+      return register(data);
+    },
 
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.auth.me()
       });
     },
+    
 
     onError: handleError
   });

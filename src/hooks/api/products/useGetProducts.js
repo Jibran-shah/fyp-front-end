@@ -10,3 +10,5 @@ export const useGetProducts = (params = {}) => {
     staleTime: 2 * 60 * 1000
   });
 };
+
+

@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { directChatService } from "../../../services/directChat.service";
-import { queryKeys } from "../../../queryKeys";
+import { queryKeys } from "../../../utils/queryKeys";
+import { getUserDirectChats } from "../../../services/directChat/directChat.service"
 
 export const useGetUserDirectChats = () => {
   return useQuery({
     queryKey: queryKeys.directChat.list(),
-    queryFn: directChatService.getUserDirectChats
+    queryFn: getUserDirectChats
   });
 };

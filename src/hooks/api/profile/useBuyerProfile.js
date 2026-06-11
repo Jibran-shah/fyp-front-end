@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { getMyBuyerProfile } from "../../../services/profile/profile.service"
 
-export const useBuyerProfile = () => {
+export const useBuyerProfile = (options = {}) => {
   return useQuery({
-    queryKey: ["buyer-profile", "me"],
+    queryKey: ["buyer-profile"],
     queryFn: getMyBuyerProfile,
-    staleTime: 5 * 60 * 1000,
+    enabled: options.enabled,
   });
 };

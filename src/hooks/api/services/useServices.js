@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getServices } from "../../../api/modules/services/services.service";
+
+import { getServices } from "../../../services/services/services.service";
 import { queryKeys } from "../../../utils/queryKeys";
 
 export const useServices = (filters = {}) => {

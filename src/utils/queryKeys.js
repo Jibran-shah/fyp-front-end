@@ -6,6 +6,7 @@ export const queryKeys = {
     init: () => ["auth", "init"],
 
     me: () => ["auth", "me"],
+    user:(id) => ["auth","user",id]
   },
 
   user: {

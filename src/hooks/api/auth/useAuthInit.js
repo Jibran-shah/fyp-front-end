@@ -3,8 +3,10 @@ import { useDispatch } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 
 import { getMe } from "../../../services/auth/auth.service";
-import { setUser, setAuthLoading } from "../../../store/slices/ui.slice";
 import { queryKeys } from "../../../utils/queryKeys";
+import { setUser } from "../../../store/slices/auth.slice";
+import { setAuthLoading } from "../../../store/slices/ui.slice";
+import { setAuthReady } from "../../../store/slices/auth.slice";
 
 export const useAuthInit = () => {
   const dispatch = useDispatch();
@@ -13,25 +15,31 @@ export const useAuthInit = () => {
     queryKey: queryKeys.auth.me(),
     queryFn: getMe,
     retry: false,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
   });
 
-  // loading state
   useEffect(() => {
     dispatch(setAuthLoading(meQuery.isLoading));
-  }, [meQuery.isLoading]);
+  }, [meQuery.isLoading, dispatch]);
 
-  // success → set user
   useEffect(() => {
     if (meQuery.data?.data?.user) {
-      dispatch(setUser(meQuery.data.data.user));
+      const user = meQuery.data?.data?.user
+      console.log("user set in store useAuthInit:",user);
+      dispatch(setUser(user));
     }
-  }, [meQuery.data]);
+  }, [meQuery.data, dispatch]);
 
-  // failure → clear user
   useEffect(() => {
     if (meQuery.isError) {
       dispatch(setUser(null));
     }
-  }, [meQuery.isError]);
+  }, [meQuery.isError, dispatch]);
+
+  // 🔥 CRITICAL FIX (this stops login loop)
+  useEffect(() => {
+    if (!meQuery.isLoading) {
+      dispatch(setAuthReady(true));
+    }
+  }, [meQuery.isLoading, dispatch]);
 };

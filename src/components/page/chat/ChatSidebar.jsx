@@ -8,7 +8,7 @@ export default function ChatSidebar({ chats = [], onSelectChat }) {
           <Typography>No chats yet</Typography>
         )}
 
-        {chats.map((chat) => (
+        {chats?.map((chat) => (
           <Paper
             key={chat.id}
             sx={{ p: 2, cursor: "pointer" }}

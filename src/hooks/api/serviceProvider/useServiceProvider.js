@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getServiceProviderById } from "../../../api/modules/serviceProvider/serviceProvider.api";
+import { getServiceProviderById } from "../../../services/serviceProvider/serviceProvider.service";
 import { queryKeys } from "../../../utils/queryKeys";
 
 export const useServiceProvider = (id) => {

@@ -4,11 +4,21 @@ import { useNavigate } from "react-router-dom";
 
 export function useAuthRedirectIfLoggedIn(redirectTo) {
   const navigate = useNavigate();
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
+  const { isAuthenticated, authReady, user } = useSelector(
+    (state) => state.auth
+  );
+
+
 
   useEffect(() => {
+
+    if (!authReady) return;
+
     if (isAuthenticated) {
-      navigate(redirectTo);
+      console.log("redirected", user)
+      navigate(redirectTo, { replace: true });
     }
-  }, [isAuthenticated, navigate, redirectTo]);
+
+  }, [isAuthenticated, authReady, navigate, redirectTo]);
 }

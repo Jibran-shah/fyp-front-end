@@ -1,24 +1,106 @@
-import { Box, Stack, Grid } from "@mui/material";
+import { Box, Container, Stack } from "@mui/material";
 
-import ProductCard from "../../components/page/products/ProductCard";
-import MarketplaceFilters from "../../components/common/marketplace/MarketplaceFilters";
+import HeroSection from "../../components/common/layout/HeroSection";
+import MarketplaceFilters from "../../components/common/marketplace/marketplaceFilter/MarketplaceFilters";
+
+import { Section } from "../../components/common/layout/Section";
+import MarketplaceGrid from "../../components/common/marketplace/marketplaceGrid/MarketplaceGrid";
+import MarketplaceGridItem from "../../components/common/marketplace/marketplaceGridItem/MarketplaceGridItem";
+import MarketplaceProductCard from "../../components/common/marketplace/cards/MarketplaceProductCard";
+
+import { useGetProducts } from "../../hooks/api/products/useGetProducts";
+import { useState } from "react";
+import { useMarketplaceProductActions } from "../../hooks/ui/marketplace/useMarketplaceProductActions";
+
 
 export default function ProductsPage() {
-  const mockProducts = [];
+
+
+    const { handleCardClick, handleAddToCart } =
+      useMarketplaceProductActions();
+  
+
+  const [filters, setFilters] = useState({
+    page: 1,
+    limit: 50,
+  });
+
+  const { data, isLoading, isError } = useGetProducts(filters);
+
+  const products = data?.data ?? [];
+
+  if (isLoading) return null;
+  if (isError) return null;
+
+  // helper: grouping instead of mock arrays
+  const electronics = products.filter((p) =>
+    p.categoryPath?.toLowerCase().includes("electronics")
+  );
+
+  const fashion = products.filter((p) =>
+    p.categoryPath?.toLowerCase().includes("fashion")
+  );
+
+  const homeLiving = products.filter((p) =>
+    p.categoryPath?.toLowerCase().includes("home")
+  );
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Stack spacing={2}>
-        <MarketplaceFilters />
+    <Box sx={{ backgroundColor: "background.default", minHeight: "100vh" }}>
+      <Container maxWidth="xl" sx={{ py: 4 }}>
+        <Stack spacing={6}>
 
-        <Grid container spacing={2}>
-          {mockProducts.map((p) => (
-            <Grid item xs={12} md={4} key={p._id}>
-              <ProductCard product={p} />
-            </Grid>
-          ))}
-        </Grid>
-      </Stack>
+          {/* HERO */}
+          <HeroSection
+            title="Discover Products"
+            subtitle="Find electronics, fashion, and everything you need in one place."
+            backgroundImage="https://images.unsplash.com/photo-1523275335684-37898b6baf30"
+          >
+            <MarketplaceFilters
+              filters={filters}
+              onChange={setFilters}
+            />
+          </HeroSection>
+
+          {/* ELECTRONICS */}
+          <Section title="Electronics" subtitle="Phones, laptops and gadgets">
+            <MarketplaceGrid>
+              {electronics.map((product) => (
+                <MarketplaceGridItem key={product._id}>
+                  <MarketplaceProductCard
+                                product={product}
+                                onCardClick={handleCardClick}
+                                onAddToCart={handleAddToCart}
+                              />
+                </MarketplaceGridItem>
+              ))}
+            </MarketplaceGrid>
+          </Section>
+
+          {/* FASHION */}
+          <Section title="Fashion" subtitle="Trending clothing and accessories">
+            <MarketplaceGrid>
+              {fashion.map((product) => (
+                <MarketplaceGridItem key={product._id}>
+                  <MarketplaceProductCard product={product} />
+                </MarketplaceGridItem>
+              ))}
+            </MarketplaceGrid>
+          </Section>
+
+          {/* HOME */}
+          <Section title="Home & Living" subtitle="Furniture and home essentials">
+            <MarketplaceGrid>
+              {homeLiving.map((product) => (
+                <MarketplaceGridItem key={product._id}>
+                  <MarketplaceProductCard product={product} />
+                </MarketplaceGridItem>
+              ))}
+            </MarketplaceGrid>
+          </Section>
+
+        </Stack>
+      </Container>
     </Box>
   );
 }

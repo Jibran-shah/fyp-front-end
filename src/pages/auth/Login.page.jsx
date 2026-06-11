@@ -1,3 +1,4 @@
+import { Stack, Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 import AuthLayout from "../../components/page/auth/AuthLayout";
@@ -5,57 +6,74 @@ import InputField from "../../components/common/InputField";
 
 import { useLogin } from "../../hooks/api/auth/useLogin";
 import { useLoginForm } from "../../hooks/form/auth/useLoginForm";
-
-import { Button } from "@mui/material";
-
 import { useAuthRedirectIfLoggedIn } from "../../hooks/api/auth/useAuthRedirectIfLoggedIn";
+
+import { useDispatch } from "react-redux";
+import { login } from "../../store/slices/auth.slice";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const loginMutation = useLogin();
   const form = useLoginForm();
-  
-  useAuthRedirectIfLoggedIn("/buyer/dashboard"); 
+
+  useAuthRedirectIfLoggedIn("/");
 
   const onSubmit = (data) => {
     loginMutation.mutate(data, {
-      onSuccess: () => {
-        navigate("/buyer/dashboard");
-      }
+      onSuccess: (res) => {
+        const user = res?.data?.user;
+        dispatch(login(user))
+        if (user?.baseProfile) {
+          navigate("/");
+        } else {
+          navigate("/profile/create");
+        }
+      },
     });
   };
 
+  console.log("LOGIN MUTATION:", loginMutation);
+
   return (
     <AuthLayout
-      title="Welcome Back"
-      subtitle="Login to continue your journey"
+      title="Welcome back"
+      subtitle="Sign in to continue your marketplace journey"
       onSubmit={form.handleSubmit(onSubmit)}
       isLoading={loginMutation.isPending}
       mode="login"
     >
-      <InputField
-        label="Email"
-        name="email"
-        register={form.register}
-        error={form.formState.errors.email}
-      />
+      <Stack spacing={2}>
+        <InputField
+          label="Email"
+          name="email"
+          register={form.register}
+          error={form.formState.errors.email}
+        />
 
-      <InputField
-        label="Password"
-        type="password"
-        name="password"
-        register={form.register}
-        error={form.formState.errors.password}
-      />
+        <InputField
+          label="Password"
+          type="password"
+          name="password"
+          register={form.register}
+          error={form.formState.errors.password}
+        />
 
-      <Button
-        onClick={() => navigate("/forgot-password")}
-        sx={{ textTransform: "none", fontSize: 12, alignSelf: "flex-end" }}
-      >
-        Forgot Password?
-      </Button>
-
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            onClick={() => navigate("/forgot-password")}
+            sx={{
+              textTransform: "none",
+              fontSize: 13,
+              color: "text.secondary",
+              p: 0,
+            }}
+          >
+            Forgot password?
+          </Button>
+        </Box>
+      </Stack>
     </AuthLayout>
   );
 }

@@ -1,10 +1,12 @@
-import { apiClient } from "../../axios/apiClient";
+import { apiClient } from "../apiClient";
+
+
 
 /* =========================
    CREATE
 ========================= */
 export const createServiceProvider = async (data) => {
-  const res = await apiClient.post("/service-providers", data, {
+  const res = await apiClient.post("/profiles/providers", data, {
     headers: { "Content-Type": "multipart/form-data" }
   });
 
@@ -15,7 +17,7 @@ export const createServiceProvider = async (data) => {
    GET ALL
 ========================= */
 export const getServiceProviders = async (params) => {
-  const res = await apiClient.get("/service-providers", { params });
+  const res = await apiClient.get("/profiles/providers", { params });
   return res.data.serviceProviders;
 };
 
@@ -23,7 +25,7 @@ export const getServiceProviders = async (params) => {
    GET BY ID
 ========================= */
 export const getServiceProviderById = async (id) => {
-  const res = await apiClient.get(`/service-providers/${id}`);
+  const res = await apiClient.get(`/profiles/providers/${id}`);
   return res.data.serviceProvider;
 };
 
@@ -32,7 +34,7 @@ export const getServiceProviderById = async (id) => {
 ========================= */
 export const updateServiceProviderByUser = async (data) => {
   const res = await apiClient.put(
-    "/service-providers/byUser",
+    "/profiles/provider/byUser",
     data,
     {
       headers: { "Content-Type": "multipart/form-data" }
@@ -58,7 +60,7 @@ export const updateServiceProvider = async ({ id, data }) => {
    DELETE
 ========================= */
 export const deleteServiceProvider = async () => {
-  const res = await apiClient.delete("/service-providers");
+  const res = await apiClient.delete("/profiles/providers");
   return res.data;
 };
 
@@ -67,7 +69,7 @@ export const deleteServiceProvider = async () => {
 ========================= */
 export const bulkDeleteServiceProviders = async (ids) => {
   const res = await apiClient.post(
-    "/service-providers/bulk-delete",
+    "/profiles/providers/bulk-delete",
     { ids }
   );
 

@@ -14,7 +14,14 @@ export const createBuyerProfile = async (data) => {
 // GET MY PROFILE
 export const getMyBuyerProfile = async () => {
   const res = await apiClient.get("/profiles/buyers/byUser");
-  return res.data.data;
+  console.log(res.data)
+  return res.data;
+};
+
+
+export const getFullProfile = async (id) => {
+  const res = await apiClient.get(`/profiles/buyers/full/${id}`);
+  return res.data;
 };
 
 // UPDATE PROFILE

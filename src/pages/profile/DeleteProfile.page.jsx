@@ -40,7 +40,7 @@ export default function DeleteProfilePage() {
         </Typography>
 
         <Typography sx={{ mt: 2, color: "text.secondary" }}>
-          This action is permanent. Your profile and associated data will be removed.
+            This action is permanent. Your profile and associated data will be removed.
         </Typography>
 
         <Stack direction="row" spacing={2} sx={{ mt: 4, justifyContent: "center" }}>

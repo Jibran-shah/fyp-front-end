@@ -1,33 +1,34 @@
-import { Box, Stack } from "@mui/material";
+import { Box, Container, Stack, Button } from "@mui/material";
 
-import HomeHeader from "../components/page/home/HomeHeader";
-import HeroSection from "../components/page/home/HeroSection";
-import ProfileCard from "../components/page/home/ProfileCard";
-import QuickActions from "../components/page/home/QuickActions";
-import FeaturedProducts from "../components/page/home/FeaturedProducts";
-import FeaturedServices from "../components/page/home/FeaturedServices";
-import HomeFooter from "../components/page/home/HomeFooter";
+import FeaturedProducts from "../components/page/products/FeaturedProducts";
+import FeaturedServices from "../components/page/services/FeaturedServices";
+import HeroSection from "../components/common/layout/HeroSection";
 
 export default function HomePage() {
   return (
-    <Box sx={{ minHeight: "100vh", backgroundColor: "#0f172a", p: 3 }}>
-      <Stack spacing={4} maxWidth={1000} mx="auto">
+    <Box sx={{ minHeight: "100vh", backgroundColor: "background.default" }}>
+      {/* CONTENT AREA */}
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Stack spacing={6}>
+          {/* HERO */}
+          <HeroSection
+            title="Discover Everything You Need"
+            subtitle="Buy products, hire professionals, and grow your business — all in one place."
+            backgroundImage="https://images.unsplash.com/photo-1521737604893-d14cc237f11d"
+            actions={[
+              <Button key="1" variant="contained">
+                Browse Products
+              </Button>,
+              <Button key="2" variant="outlined">
+                Explore Services
+              </Button>,
+            ]}
+          />
 
-        <HomeHeader />
-
-        <HeroSection />
-
-        <QuickActions />
-
-        <FeaturedProducts />
-
-        <FeaturedServices />
-
-        <ProfileCard />
-
-        <HomeFooter />
-
-      </Stack>
+          <FeaturedProducts />
+          <FeaturedServices />
+        </Stack>
+      </Container>
     </Box>
   );
 }

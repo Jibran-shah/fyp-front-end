@@ -36,5 +36,8 @@ export const resendResetOtp = (data) =>
 export const verifyEmail = (query) =>
   apiClient.get("/auth/verify-email", { params: query });
 
+export const getUserById = (id) =>
+  apiClient.get(`/auth/${id}`);
+
 export const resendVerifyEmail = (data) =>
   apiClient.post("/auth/resend-verify-email", data);

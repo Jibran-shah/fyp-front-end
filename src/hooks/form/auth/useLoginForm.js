@@ -8,10 +8,9 @@ export const useLoginForm = () => {
 
     defaultValues: {
       email: "",
-      userName: "",
       password: ""
     },
 
-    mode: "onSubmit", // improves UX consistency
+    mode: "onSubmit"
   });
 };

@@ -3,8 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   authLoading: false,
 
-  // future-safe UI flags
   sidebarOpen: true,
+
   theme: "light",
 };
 
@@ -20,6 +20,10 @@ const uiSlice = createSlice({
       state.sidebarOpen = !state.sidebarOpen;
     },
 
+    setSidebarOpen: (state, action) => {
+      state.sidebarOpen = action.payload;
+    },
+
     setTheme: (state, action) => {
       state.theme = action.payload;
     },
@@ -29,6 +33,7 @@ const uiSlice = createSlice({
 export const {
   setAuthLoading,
   toggleSidebar,
+  setSidebarOpen,
   setTheme,
 } = uiSlice.actions;
 

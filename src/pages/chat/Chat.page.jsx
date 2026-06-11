@@ -1,9 +1,10 @@
 import { Paper } from "@mui/material";
-import PageContainer from "../../components/common/PageContainer";
+import PageContainer from "../../components/common/layout/pageContainer/PageContainer";
 
-import ChatHeader from "../../components/chat/ChatHeader";
-import MessageList from "../../components/chat/MessageList";
-import MessageInput from "../../components/chat/MessageInput";
+import ChatHeader from "../../components/page/chat/ChatHeader";
+import MessageList from "../../components/page/chat/MessageList";
+
+import MessageInput from "../../components/page/chat/MessageInput";
 
 export default function ChatPage() {
   const messages = [];

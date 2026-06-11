@@ -10,11 +10,18 @@ import { store } from "./store/store";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import theme from "./theme/theme";
+
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <ReactQueryProvider>
       <BrowserRouter>
-        <App />
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+          <App />
 
         <ToastContainer
           position="top-right"
@@ -25,6 +32,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           pauseOnHover
           draggable
         />
+      </ThemeProvider>
       </BrowserRouter>
     </ReactQueryProvider>
   </Provider>

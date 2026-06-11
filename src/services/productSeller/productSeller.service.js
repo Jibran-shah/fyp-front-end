@@ -4,7 +4,7 @@ import { apiClient } from "../apiClient";
    CREATE SELLER
 ========================= */
 export const createProductSeller = async (data) => {
-  const res = await apiClient.post("/product-sellers", data);
+  const res = await apiClient.post("/profiles/sellers", data);
   return res.data.productSeller;
 };
 
@@ -12,7 +12,7 @@ export const createProductSeller = async (data) => {
    GET ALL SELLERS
 ========================= */
 export const getAllProductSellers = async (params) => {
-  const res = await apiClient.get("/product-sellers", { params });
+  const res = await apiClient.get("/profiles/sellers", { params });
   return res.data.productSellers;
 };
 
@@ -20,7 +20,7 @@ export const getAllProductSellers = async (params) => {
    GET BY ID
 ========================= */
 export const getProductSellerById = async (id) => {
-  const res = await apiClient.get(`/product-sellers/${id}`);
+  const res = await apiClient.get(`/profiles/sellers/${id}`);
   return res.data.productSeller;
 };
 
@@ -28,7 +28,7 @@ export const getProductSellerById = async (id) => {
    GET MY SELLER
 ========================= */
 export const getMySellerProfile = async () => {
-  const res = await apiClient.get("/product-sellers/me");
+  const res = await apiClient.get("/profiles/ellers/me");
   return res.data.productSeller;
 };
 
@@ -36,7 +36,7 @@ export const getMySellerProfile = async () => {
    UPDATE SELLER
 ========================= */
 export const updateProductSeller = async ({ id, data }) => {
-  const res = await apiClient.put(`/product-sellers/${id}`, data);
+  const res = await apiClient.put(`/profiles/sellers/${id}`, data);
   return res.data.productSeller;
 };
 

@@ -1,10 +1,20 @@
 import { Paper, Typography, Button, Stack } from "@mui/material";
+import { useDeleteService } from "../../../hooks/api/services/useDeleteService";
 
 export default function DeleteServiceModal({
-  onConfirm,
-  onCancel,
-  loading
+  serviceId,
+  onClose
 }) {
+  const { mutate: deleteService, isLoading } = useDeleteService();
+
+  const handleDelete = () => {
+    deleteService(serviceId, {
+      onSuccess: () => {
+        onClose?.();
+      }
+    });
+  };
+
   return (
     <Paper sx={{ p: 4, maxWidth: 500 }}>
       <Stack spacing={3}>
@@ -20,15 +30,15 @@ export default function DeleteServiceModal({
           <Button
             color="error"
             variant="contained"
-            onClick={onConfirm}
-            disabled={loading}
+            onClick={handleDelete}
+            disabled={isLoading}
           >
-            Delete Service
+            {isLoading ? "Deleting..." : "Delete Service"}
           </Button>
 
           <Button
             variant="outlined"
-            onClick={onCancel}
+            onClick={onClose}
           >
             Cancel
           </Button>

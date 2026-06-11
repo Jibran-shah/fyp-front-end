@@ -1,18 +1,28 @@
 import { Typography, Stack, Button } from "@mui/material";
 
-import CartItemCard from "./CartItemCard";
-import EmptyCart from "./EmptyCart";
+import SummaryCard from "../../components/common/SummaryCard"
+import PageContainer from "../../components/common/layout/pageContainer/PageContainer"
+import EmptyCart from "../../components/page/cart/EmptyCart"
+import CartItemCard from "../../components/page/cart/CartItemCard"
+// //import { useCart } from "../../../hooks/api/cart/useCart";
 
-import PageContainer from "../../components/common/PageContainer";
-import SummaryCard from "../../components/common/SummaryCard";
+// import CartItemCard from "./CartItemCard";
+// import EmptyCart from "./EmptyCart";
+
+// import PageContainer from "../../components/common/PageContainer";
+// import SummaryCard from "../../components/common/SummaryCard";
+
+// import { useClearCart } from "../../../hooks/api/cart/useClearCart";
+import { useCart } from "../../hooks/api/cart/useCart";
+import { useClearCart } from "../../hooks/api/cart/useClearCart";
 
 export default function CartPage() {
-  const cart = {
-    items: [],
-    subtotal: 0
-  };
+  const { data: cart, isLoading } = useCart();
+  const { mutate: clearCart } = useClearCart();
 
-  if (!cart.items.length) {
+  if (isLoading) return null;
+
+  if (!cart?.items?.length) {
     return <EmptyCart />;
   }
 
@@ -23,8 +33,8 @@ export default function CartPage() {
       </Typography>
 
       <Stack spacing={2}>
-        {cart.items.map((item, idx) => (
-          <CartItemCard key={idx} item={item} />
+        {cart.items.map((item) => (
+          <CartItemCard key={item._id} item={item} />
         ))}
       </Stack>
 
@@ -33,9 +43,18 @@ export default function CartPage() {
           Subtotal: Rs. {cart.subtotal}
         </Typography>
 
-        <Button variant="contained">
-          Checkout
-        </Button>
+        <Stack direction="row" spacing={2} mt={2}>
+          <Button
+            variant="outlined"
+            onClick={() => clearCart()}
+          >
+            Clear Cart
+          </Button>
+
+          <Button variant="contained">
+            Checkout
+          </Button>
+        </Stack>
       </SummaryCard>
     </PageContainer>
   );

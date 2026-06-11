@@ -1,54 +1,21 @@
-import axios from "../axios";
-
-const directChatApi = {
-  createDirectChat: (data) =>
-    axios.post("/direct-chats", data),
-
-  getUserDirectChats: () =>
-    axios.get("/direct-chats/user"),
-
-  getDirectChat: (chatId) =>
-    axios.get(`/direct-chats/${chatId}`),
-
-  deleteDirectChatForUser: (chatId) =>
-    axios.patch(`/direct-chats/${chatId}/delete`),
-
-  blockUser: (chatId) =>
-    axios.patch(`/direct-chats/${chatId}/block`),
-
-  unblockUser: (chatId) =>
-    axios.patch(`/direct-chats/${chatId}/unblock`)
-};
+import {apiClient} from "../apiClient";
 
 
-export const directChatService = {
-  createDirectChat: async (data) => {
-    const res = await directChatApi.createDirectChat(data);
-    return res.data.data;
-  },
+export const  createDirectChat =  (data) =>
+    apiClient.post("/chat/direct", data)
 
-  getUserDirectChats: async () => {
-    const res = await directChatApi.getUserDirectChats();
-    return res.data.data;
-  },
+export const  getUserDirectChats = () =>
+    apiClient.get("/chat/direct/user")
 
-  getDirectChat: async (chatId) => {
-    const res = await directChatApi.getDirectChat(chatId);
-    return res.data.data;
-  },
+export const  getDirectChat =  (chatId) =>
+    apiClient.get(`/chat/direct/${chatId}`)
 
-  deleteDirectChatForUser: async (chatId) => {
-    const res = await directChatApi.deleteDirectChatForUser(chatId);
-    return res.data.data;
-  },
+export const  deleteDirectChatForUser = (chatId) =>
+    apiClient.patch(`/chat/direct/${chatId}/delete`)
 
-  blockUser: async (chatId) => {
-    const res = await directChatApi.blockUser(chatId);
-    return res.data.data;
-  },
+export const  blockUser = (chatId) =>
+    apiClient.patch(`/chat/direct/${chatId}/block`)
 
-  unblockUser: async (chatId) => {
-    const res = await directChatApi.unblockUser(chatId);
-    return res.data.data;
-  }
-};
+export const  unblockUser = (chatId) =>
+    apiClient.patch(`/chat/direct/${chatId}/unblock`)
+

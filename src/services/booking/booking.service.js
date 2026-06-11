@@ -3,8 +3,11 @@ import { apiClient } from "../apiClient";
 /* =========================
    CREATE BOOKING
 ========================= */
-export const createBooking = (data) =>
-  apiClient.post("/bookings", data);
+export const createBooking = (data) =>{
+   console.log(data)
+   return apiClient.post("/bookings", data);
+}
+  
 
 /* =========================
    GET MY BOOKINGS

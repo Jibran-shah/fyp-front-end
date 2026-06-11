@@ -2,7 +2,8 @@ import AppRoutes from "../routes/AppRoutes";
 import { useAuthInit } from "../hooks/api/auth/useAuthInit";
 import { useSelector } from "react-redux";
 import AppLoader from "../components/common/AppLoader";
-import Navbar from "../components/common/layout/Navbar";
+import Navbar from "../components/common/layout/Navbar/Navbar";
+import Footer from "../components/common/Footer";
 
 export default function App() {
   // bootstraps authentication session once on app mount
@@ -17,5 +18,6 @@ export default function App() {
   return (<>
   <Navbar/>
   <AppRoutes />
+  <Footer />
   </>);
 }

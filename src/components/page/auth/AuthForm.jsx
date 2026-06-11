@@ -14,8 +14,7 @@ export default function AuthForm({
         height: "100vh",
         display: "flex",
         justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#0f172a"
+        alignItems: "center"
       }}
     >
       <Paper
@@ -56,7 +55,7 @@ export default function AuthForm({
           {isLoading ? "Loading..." : "Submit"}
         </Button>
 
-        {/* FOOTER (NEW SYSTEM FEATURE) */}
+        {/* FOOTER */}
         {footer && (
           <Typography
             variant="body2"
