@@ -1,52 +1,83 @@
-import { Box, Container, Stack } from "@mui/material";
+import { Box, Container, Stack, Button } from "@mui/material";
+import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
 import HeroSection from "../../components/common/layout/HeroSection";
-import MarketplaceFilters from "../../components/common/marketplace/marketplaceFilter/MarketplaceFilters";
+import FilterBar from "../../components/common/marketplace/marketplaceFilter/MarketplaceFilters";
 
 import { Section } from "../../components/common/layout/Section";
 import MarketplaceGrid from "../../components/common/marketplace/marketplaceGrid/MarketplaceGrid";
 import MarketplaceGridItem from "../../components/common/marketplace/marketplaceGridItem/MarketplaceGridItem";
 import MarketplaceProductCard from "../../components/common/marketplace/cards/MarketplaceProductCard";
 
-import { useGetProducts } from "../../hooks/api/products/useGetProducts";
-import { useState } from "react";
 import { useMarketplaceProductActions } from "../../hooks/ui/marketplace/useMarketplaceProductActions";
-
+import { useGetProducts } from "../../hooks/api/products/products.hooks";
 
 export default function ProductsPage() {
+  const navigate = useNavigate();
 
+  const { handleCardClick, handleAddToCart } =
+    useMarketplaceProductActions();
 
-    const { handleCardClick, handleAddToCart } =
-      useMarketplaceProductActions();
-  
-
+  // filter state (ONLY for navigation)
   const [filters, setFilters] = useState({
+    search: "",
+    category: "",
+    minPrice: "",
+    maxPrice: "",
+    sort: "-createdAt",
+  });
+
+  const { data, isLoading, isError } = useGetProducts({
     page: 1,
     limit: 50,
   });
 
-  const { data, isLoading, isError } = useGetProducts(filters);
-
   const products = data?.data ?? [];
+
+  // category split (safe + memoized)
+  const electronics = useMemo(
+    () =>
+      products.filter((p) =>
+        p.categoryPath?.toLowerCase().includes("electronics")
+      ),
+    [products]
+  );
+
+  const fashion = useMemo(
+    () =>
+      products.filter((p) =>
+        p.categoryPath?.toLowerCase().includes("fashion")
+      ),
+    [products]
+  );
+
+  const homeLiving = useMemo(
+    () =>
+      products.filter((p) =>
+        p.categoryPath?.toLowerCase().includes("home")
+      ),
+    [products]
+  );
+
+  // navigation to search page
+  const handleGoToSearch = () => {
+    const params = new URLSearchParams();
+
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== "" && value !== null && value !== undefined) {
+        params.set(key, String(value));
+      }
+    });
+
+    navigate(`/products/search?${params.toString()}`);
+  };
 
   if (isLoading) return null;
   if (isError) return null;
 
-  // helper: grouping instead of mock arrays
-  const electronics = products.filter((p) =>
-    p.categoryPath?.toLowerCase().includes("electronics")
-  );
-
-  const fashion = products.filter((p) =>
-    p.categoryPath?.toLowerCase().includes("fashion")
-  );
-
-  const homeLiving = products.filter((p) =>
-    p.categoryPath?.toLowerCase().includes("home")
-  );
-
   return (
-    <Box sx={{ backgroundColor: "background.default", minHeight: "100vh" }}>
+    <Box sx={{ bgcolor: "background.default", minHeight: "100vh" }}>
       <Container maxWidth="xl" sx={{ py: 4 }}>
         <Stack spacing={6}>
 
@@ -56,10 +87,52 @@ export default function ProductsPage() {
             subtitle="Find electronics, fashion, and everything you need in one place."
             backgroundImage="https://images.unsplash.com/photo-1523275335684-37898b6baf30"
           >
-            <MarketplaceFilters
+
+            {/* ✅ YOUR NEW GENERIC FILTER BAR */}
+            <FilterBar
               filters={filters}
               onChange={setFilters}
+              config={{
+                search: true,
+                searchPlaceholder: "Search products...",
+
+                categories: [
+                  { label: "Electronics", value: "electronics" },
+                  { label: "Fashion", value: "fashion" },
+                  { label: "Home", value: "home" },
+                ],
+
+                sortOptions: [
+                  { label: "Newest", value: "-createdAt" },
+                  { label: "Oldest", value: "createdAt" },
+                  { label: "Price ↑", value: "price" },
+                  { label: "Price ↓", value: "-price" },
+                  { label: "Rating", value: "-ratingAverage" },
+                ],
+
+                extraFilters: [
+                  {
+                    key: "inStock",
+                    label: "Stock",
+                    type: "select",
+                    options: [
+                      { label: "All", value: "" },
+                      { label: "In Stock", value: true },
+                      { label: "Out of Stock", value: false },
+                    ],
+                  },
+                ],
+              }}
             />
+
+            <Button
+              variant="contained"
+              onClick={handleGoToSearch}
+              sx={{ mt: 2 }}
+            >
+              Search Products
+            </Button>
+
           </HeroSection>
 
           {/* ELECTRONICS */}
@@ -68,10 +141,10 @@ export default function ProductsPage() {
               {electronics.map((product) => (
                 <MarketplaceGridItem key={product._id}>
                   <MarketplaceProductCard
-                                product={product}
-                                onCardClick={handleCardClick}
-                                onAddToCart={handleAddToCart}
-                              />
+                    product={product}
+                    onCardClick={handleCardClick}
+                    onAddToCart={handleAddToCart}
+                  />
                 </MarketplaceGridItem>
               ))}
             </MarketplaceGrid>
@@ -82,7 +155,11 @@ export default function ProductsPage() {
             <MarketplaceGrid>
               {fashion.map((product) => (
                 <MarketplaceGridItem key={product._id}>
-                  <MarketplaceProductCard product={product} />
+                  <MarketplaceProductCard
+                    product={product}
+                    onCardClick={handleCardClick}
+                    onAddToCart={handleAddToCart}
+                  />
                 </MarketplaceGridItem>
               ))}
             </MarketplaceGrid>
@@ -93,7 +170,11 @@ export default function ProductsPage() {
             <MarketplaceGrid>
               {homeLiving.map((product) => (
                 <MarketplaceGridItem key={product._id}>
-                  <MarketplaceProductCard product={product} />
+                  <MarketplaceProductCard
+                    product={product}
+                    onCardClick={handleCardClick}
+                    onAddToCart={handleAddToCart}
+                  />
                 </MarketplaceGridItem>
               ))}
             </MarketplaceGrid>

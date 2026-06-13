@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { getMe } from "../../../services/auth/auth.service";
 import { queryKeys } from "../../../utils/queryKeys";
-import { setUser } from "../../../store/slices/auth.slice";
+import { login, setUser } from "../../../store/slices/auth.slice";
 import { setAuthLoading } from "../../../store/slices/ui.slice";
 import { setAuthReady } from "../../../store/slices/auth.slice";
 
@@ -26,6 +26,10 @@ export const useAuthInit = () => {
     if (meQuery.data?.data?.user) {
       const user = meQuery.data?.data?.user
       console.log("user set in store useAuthInit:",user);
+      if(user.isEmailVerified && user.baseProfile){
+        console.log("called here");
+        dispatch(login(user))
+      }
       dispatch(setUser(user));
     }
   }, [meQuery.data, dispatch]);

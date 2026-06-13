@@ -17,7 +17,12 @@ export const createProfileSchema = z.object({
 
   city: z.string().optional(),
 
-  address: z.string().optional()
+  address: z.string().optional(),
+
+  profileAvatar: z.any().optional(),
+
+  profileCover: z.any().optional(),
 });
 
-export const updateProfileSchema = createProfileSchema.partial();
+export const updateProfileSchema =
+  createProfileSchema.partial();

@@ -2,16 +2,22 @@ import { useNavigate } from "react-router-dom";
 
 import { Box, Paper, Typography, Button, Stack } from "@mui/material";
 
-import { useDeleteBuyerProfile } from "../../hooks/api/profile/useDeleteBuyerProfile";
+import { useDeleteBuyerProfile } from "../../hooks/api/profile/buyerProfile.hooks";
+import { useDispatch } from "react-redux";
+import { logout } from "../../store/slices/auth.slice";
 
 export default function DeleteProfilePage() {
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
   const deleteMutation = useDeleteBuyerProfile();
 
   const handleDelete = () => {
     deleteMutation.mutate(undefined, {
-      onSuccess: () => {
+      onSuccess: (res) => {
+        console.log("logout res",res);
+        dispatch(logout());
+        console.log("navigating to login");
         navigate("/login");
       }
     });
@@ -24,7 +30,6 @@ export default function DeleteProfilePage() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#0f172a"
       }}
     >
       <Paper

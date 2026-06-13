@@ -3,35 +3,89 @@ import { apiClient } from "../apiClient";
 /* ======================
    CREATE CATEGORY
 ====================== */
-export const createCategory = (data) =>
-  apiClient.post("/categories", data);
+export const createCategory = (data) => {
+  console.log("[createCategory] request:", data);
+
+  return apiClient.post("/categories", data).then((res) => {
+    console.log("[createCategory] response:", res);
+    return res;
+  }).catch((err) => {
+    console.error("[createCategory] error:", err);
+    throw err;
+  });
+};
 
 /* ======================
    GET ALL CATEGORIES
 ====================== */
-export const getCategories = (params) =>
-  apiClient.get("/categories", { params });
+export const getCategories = (params) => {
+  console.log("[getCategories] params:", params);
+
+  return apiClient.get("/categories", { params }).then((res) => {
+    console.log("[getCategories] response:", res);
+    return res;
+  }).catch((err) => {
+    console.error("[getCategories] error:", err);
+    throw err;
+  });
+};
 
 /* ======================
    GET CATEGORY TREE
 ====================== */
-export const getCategoryTree = (params) =>
-  apiClient.get("/categories/tree", { params });
+export const getCategoryTree = (params) => {
+  console.log("[getCategoryTree] params:", params);
+  return apiClient.get("/categories/tree", { params }).then((res) => {
+    console.log("[getCategoryTree] response:", res);
+    return res.data;
+  }).catch((err) => {
+    console.error("[getCategoryTree] error:", err);
+    throw err;
+  });
+};
 
 /* ======================
    GET BY ID
 ====================== */
-export const getCategoryById = (id) =>
-  apiClient.get(`/categories/${id}`);
+export const getCategoryById = (id) => {
+  console.log("[getCategoryById] id:", id);
+
+  return apiClient.get(`/categories/${id}`).then((res) => {
+    console.log("[getCategoryById] response:", res);
+    return res;
+  }).catch((err) => {
+    console.error("[getCategoryById] error:", err);
+    throw err;
+  });
+};
 
 /* ======================
    UPDATE CATEGORY
 ====================== */
-export const updateCategory = (id, data) =>
-  apiClient.patch(`/categories/${id}`, data);
+export const updateCategory = (id, data) => {
+  console.log("[updateCategory] id:", id);
+  console.log("[updateCategory] data:", data);
+
+  return apiClient.patch(`/categories/${id}`, data).then((res) => {
+    console.log("[updateCategory] response:", res);
+    return res;
+  }).catch((err) => {
+    console.error("[updateCategory] error:", err);
+    throw err;
+  });
+};
 
 /* ======================
    DELETE CATEGORY
 ====================== */
-export const deleteCategory = (id) =>
-  apiClient.delete(`/categories/${id}`);
+export const deleteCategory = (id) => {
+  console.log("[deleteCategory] id:", id);
+
+  return apiClient.delete(`/categories/${id}`).then((res) => {
+    console.log("[deleteCategory] response:", res);
+    return res;
+  }).catch((err) => {
+    console.error("[deleteCategory] error:", err);
+    throw err;
+  });
+};

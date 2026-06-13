@@ -1,25 +1,31 @@
 import { Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import AuthLayout from "../../components/page/auth/AuthLayout";
-import InputField from "../../components/common/InputField";
+import { InputField } from "../../components/common/InputField";
 
 import { useRegister } from "../../hooks/api/auth/useRegister";
 import { useRegisterForm } from "../../hooks/form/auth/useRegisterForm";
-import { useAuthRedirectIfLoggedIn } from "../../hooks/api/auth/useAuthRedirectIfLoggedIn";
+import { setUser } from "../../store/slices/auth.slice";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const registerMutation = useRegister();
   const form = useRegisterForm();
 
-  useAuthRedirectIfLoggedIn("/buyer/dashboard");
-
   const onSubmit = (data) => {
     registerMutation.mutate(data, {
-
-      onSuccess: () => navigate("/profile/create"),
+      onSuccess: (res) => {
+        console.log("REGISTER RESPONSE:", res);
+        const user = res?.data?.user ?? res?.user;
+        if (user) {
+          dispatch(setUser(user));
+        }
+        navigate("/emailVerificationGate");
+      },
     });
   };
 

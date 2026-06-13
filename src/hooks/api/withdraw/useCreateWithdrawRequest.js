@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createWithdrawRequest } from "../../../services/withdraw/withdraw.service";
 import { queryKeys } from "../../../utils/queryKeys";
 import { useApiErrorHandler } from "../../ui/useApiErrorHandler";
+import { toast } from "react-toastify";
 
 export const useCreateWithdrawRequest = () => {
   const handleError = useApiErrorHandler();
@@ -16,6 +17,6 @@ export const useCreateWithdrawRequest = () => {
       });
     },
 
-    onError: handleError
+    onError:(error)=>handleError(error,toast.error)
   });
 };

@@ -1,6 +1,6 @@
 import { TextField, Box } from "@mui/material";
 
-export default function InputField({
+export function InputField({
   label,
   type = "text",
   name,
@@ -8,9 +8,13 @@ export default function InputField({
   error,
   placeholder,
   disabled = false,
-  fullWidth = true
+  fullWidth = true,
+  ...rest
 }) {
-  const registerProps = register ? register(name) : {};
+  // supports BOTH patterns:
+  const registerProps = register
+    ? register(name)
+    : rest;
 
   return (
     <Box sx={{ mb: 2 }}>

@@ -4,15 +4,6 @@ import SummaryCard from "../../components/common/SummaryCard"
 import PageContainer from "../../components/common/layout/pageContainer/PageContainer"
 import EmptyCart from "../../components/page/cart/EmptyCart"
 import CartItemCard from "../../components/page/cart/CartItemCard"
-// //import { useCart } from "../../../hooks/api/cart/useCart";
-
-// import CartItemCard from "./CartItemCard";
-// import EmptyCart from "./EmptyCart";
-
-// import PageContainer from "../../components/common/PageContainer";
-// import SummaryCard from "../../components/common/SummaryCard";
-
-// import { useClearCart } from "../../../hooks/api/cart/useClearCart";
 import { useCart } from "../../hooks/api/cart/useCart";
 import { useClearCart } from "../../hooks/api/cart/useClearCart";
 

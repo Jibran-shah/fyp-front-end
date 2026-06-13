@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 
 import { useState } from "react";
-import InputField from "../../components/common/InputField";
+import {InputField} from "../../components/common/InputField";
 import { useCreateService } from "../../hooks/api/services/useCreateService";
 
 export default function CreateServicePage() {

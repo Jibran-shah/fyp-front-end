@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { resendVerifyEmail } from "../../../services/auth/auth.service";
 import { useApiErrorHandler } from "../../ui/useApiErrorHandler";
+import { toast } from "react-toastify";
 
 export const useResendVerifyEmail = () => {
   const handleError = useApiErrorHandler();
@@ -9,7 +10,7 @@ export const useResendVerifyEmail = () => {
     mutationFn: resendVerifyEmail,
 
     onError: (error) => {
-      handleError(error);
+      handleError(error,toast);
     }
   });
 };

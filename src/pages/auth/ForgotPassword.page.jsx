@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 import AuthForm from "../../components/page/auth/AuthForm";
-import InputField from "../../components/common/InputField";
+import {InputField} from "../../components/common/InputField";
 
 import { useForgotPasswordForm } from "../../hooks/form/auth/useForgotPassword.form";
 import { useForgotPassword } from "../../hooks/api/auth/useForgotPassword";

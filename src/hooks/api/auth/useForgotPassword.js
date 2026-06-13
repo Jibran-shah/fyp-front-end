@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { forgotPassword } from "../../../services/auth/auth.service";
 import { useApiErrorHandler } from "../../ui/useApiErrorHandler";
+import { toast } from "react-toastify";
 
 export const useForgotPassword = () => {
   const handleError = useApiErrorHandler();
@@ -10,7 +11,7 @@ export const useForgotPassword = () => {
     mutationFn: forgotPassword,
 
     onError: (error) => {
-      handleError(error);
+      handleError(error,toast.error);
     }
   });
 };

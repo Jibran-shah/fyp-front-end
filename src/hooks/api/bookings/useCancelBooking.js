@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { cancelBooking } from "../../../services/bookings/bookings.service";
 import { queryKeys } from "../../../utils/queryKeys";
 import { useApiErrorHandler } from "../../ui/useApiErrorHandler";
+import { toast } from "react-toastify";
 
 export const useCancelBooking = () => {
   const handleError = useApiErrorHandler();
@@ -16,6 +17,6 @@ export const useCancelBooking = () => {
       });
     },
 
-    onError: handleError
+    onError: (error)=>handleError(error,toast.error)
   });
 };

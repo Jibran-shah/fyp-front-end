@@ -10,7 +10,6 @@ export default function PaymentTransactionDetailsPage() {
 
       <Paper sx={{ p: 3 }}>
         <Stack spacing={1}>
-          <Typography>Transaction ID: #123</Typography>
           <Typography>Status: Pending</Typography>
           <Typography>Amount: 2500</Typography>
           <Typography>Buyer: User XYZ</Typography>

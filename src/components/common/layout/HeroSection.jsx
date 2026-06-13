@@ -1,15 +1,15 @@
-import { Box, Container, Stack, Typography } from "@mui/material";
+import { Box, Container, Stack, Typography, useTheme } from "@mui/material";
 
 export default function AppHero({
   title,
   subtitle,
   backgroundImage,
-
-  // optional sections
   children,
   actions,
-  variant = "center", // "center" | "split"
+  variant = "center",
 }) {
+  const theme = useTheme();
+
   return (
     <Box
       sx={{
@@ -17,32 +17,40 @@ export default function AppHero({
         minHeight: 340,
         display: "flex",
         alignItems: "center",
-        color: "white",
         borderRadius: 2,
         overflow: "hidden",
 
+        // background image or theme gradient fallback
         backgroundImage: backgroundImage
           ? `url(${backgroundImage})`
-          : "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)",
+          : `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      {/* overlay */}
+      {/* BACKGROUND OVERLAY (non-interactive) */}
       <Box
         sx={{
           position: "absolute",
           inset: 0,
-          background:
-            "linear-gradient(135deg, rgba(15,23,42,0.88), rgba(37,99,235,0.65))",
+          zIndex: 0,
+          pointerEvents: "none",
+
+          background: `linear-gradient(
+            135deg,
+            ${theme.palette.common.black}E0,
+            ${theme.palette.primary.main}99
+          )`,
         }}
       />
 
+      {/* CONTENT */}
       <Container
         maxWidth="lg"
         sx={{
           position: "relative",
-          zIndex: 2,
+          zIndex: 1,
           py: 6,
         }}
       >
@@ -51,33 +59,30 @@ export default function AppHero({
           alignItems={variant === "center" ? "center" : "flex-start"}
           textAlign={variant === "center" ? "center" : "left"}
         >
-          {/* TITLE */}
           {title && (
             <Typography variant="h3" fontWeight={800}>
               {title}
             </Typography>
           )}
 
-          {/* SUBTITLE */}
           {subtitle && (
             <Typography
               sx={{
                 opacity: 0.85,
                 maxWidth: 700,
+                color: theme.palette.text.primary,
               }}
             >
               {subtitle}
             </Typography>
           )}
 
-          {/* ACTIONS (buttons etc) */}
           {actions && (
             <Stack direction="row" spacing={2}>
               {actions}
             </Stack>
           )}
 
-          {/* CHILD CONTENT (filters, search, etc) */}
           {children && (
             <Box
               sx={{

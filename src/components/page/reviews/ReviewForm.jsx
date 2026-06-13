@@ -4,7 +4,7 @@ import {
   Button
 } from "@mui/material";
 
-import InputField from "../common/InputField";
+import {InputField} from "../../common/InputField";
 
 export default function ReviewForm({
   register,

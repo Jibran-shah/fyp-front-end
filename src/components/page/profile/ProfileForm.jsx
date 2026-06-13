@@ -1,11 +1,12 @@
-import { Stack, Button } from "@mui/material";
-import InputField from "../../common/InputField";
+import { Stack, Button, TextField } from "@mui/material";
+
+import {InputField} from "../../common/InputField"
 
 export default function ProfileForm({
   form,
   onSubmit,
   isLoading,
-  mode = "create"
+  mode = "create",
 }) {
   return (
     <Stack component="form" spacing={2} onSubmit={form.handleSubmit(onSubmit)}>
@@ -14,6 +15,34 @@ export default function ProfileForm({
         name="fullName"
         register={form.register}
         error={form.formState.errors.fullName}
+      />
+
+      <TextField
+        type="file"
+        label="Profile Avatar"
+        InputLabelProps={{ shrink: true }}
+        inputProps={{ accept: "image/*" }}
+        onChange={(e) =>
+          form.setValue(
+            "profileAvatar",
+            e.target.files?.[0] ?? null,
+            { shouldValidate: true }
+          )
+        }
+      />
+
+      <TextField
+        type="file"
+        label="Profile Cover"
+        InputLabelProps={{ shrink: true }}
+        inputProps={{ accept: "image/*" }}
+        onChange={(e) =>
+          form.setValue(
+            "profileCover",
+            e.target.files?.[0] ?? null,
+            { shouldValidate: true }
+          )
+        }
       />
 
       <InputField
@@ -57,8 +86,8 @@ export default function ProfileForm({
             ? "Updating..."
             : "Update Profile"
           : isLoading
-            ? "Creating..."
-            : "Create Profile"}
+          ? "Creating..."
+          : "Create Profile"}
       </Button>
     </Stack>
   );

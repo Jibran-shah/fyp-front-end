@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { login } from "../../../services/auth/auth.service";
 import { useApiErrorHandler } from "../../ui/useApiErrorHandler";
 import { queryKeys } from "../../../utils/queryKeys";
+import { toast } from "react-toastify";
 
 export const useLogin = () => {
   console.log("🔥 useLogin HOOK INITIALIZED");
@@ -24,7 +25,7 @@ export const useLogin = () => {
 
     onError: (err) => {
       console.log("❌ LOGIN MUTATION ERROR:", err);
-      handleError(err);
+      handleError(err,toast.error);
     }
   });
 };

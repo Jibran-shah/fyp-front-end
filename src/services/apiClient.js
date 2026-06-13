@@ -23,16 +23,17 @@ const processQueue = (error) => {
 };
 
 const forceLogout = () => {
-  const state = store.getState();
+  console.log("before", store.getState().auth);
 
-  if (!state.auth.isAuthenticated) {
-    return;
-  }
-  
   store.dispatch(logout());
 
-  if (window.location.pathname !== "/login") {
-    window.location.href = "/login";
+  console.log("after", store.getState().auth);
+
+  const currentPath = window.location.pathname;
+
+  if (currentPath !== "/login") {
+    console.log("redirecting");
+    window.location.replace("/login");
   }
 };
 
@@ -48,6 +49,15 @@ apiClient.interceptors.response.use(
 
     const isUnauthorized = error.response.status === 401;
 
+    // Don't retry refresh endpoint itself
+    const isRefreshRequest =
+      originalRequest?.url?.includes("/auth/refresh-token");
+
+    if (isRefreshRequest) {
+      forceLogout();
+      return Promise.reject(error);
+    }
+
     if (isUnauthorized && !originalRequest._retry) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -59,17 +69,11 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const res = await axios.post(
+        await axios.post(
           "http://localhost:5000/api/v1/auth/refresh-token",
           {},
           { withCredentials: true }
         );
-
-        // IMPORTANT: validate refresh response
-        if (!res || res.status !== 200) {
-          
-          throw new Error("Refresh failed");
-        }
 
         processQueue(null);
 

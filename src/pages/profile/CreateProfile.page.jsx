@@ -2,11 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { Box, Paper, Typography } from "@mui/material";
 
 useCreateBuyerProfile
-import { useCreateBuyerProfile } from "../../hooks/api/profile/useCreateBuyerProfile";
+import { useCreateBuyerProfile } from "../../hooks/api/profile/buyerProfile.hooks";
 import { useCreateProfileForm } from "../../hooks/form/profile/useCreateProfileForm";
 import ProfileForm from "../../components/page/profile/ProfileForm";
 
 export default function CreateProfilePage() {
+  console.log("profile pag mounted")
   const navigate = useNavigate();
 
   const form = useCreateProfileForm();
@@ -14,9 +15,12 @@ export default function CreateProfilePage() {
 
   const onSubmit = (data) => {
     createMutation.mutate(data, {
-      onSuccess: () => navigate("/profile")
+      onSuccess: () =>{
+        navigate("/profile")
+      }
     });
   };
+
 
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>

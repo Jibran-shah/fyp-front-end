@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { verifyResetOtp } from "../../../services/auth/auth.service";
 import { useApiErrorHandler } from "../../ui/useApiErrorHandler";
+import { toast } from "react-toastify";
 
 export const useVerifyResetOtp = () => {
   const handleError = useApiErrorHandler();
@@ -9,7 +10,7 @@ export const useVerifyResetOtp = () => {
     mutationFn: verifyResetOtp,
 
     onError: (error) => {
-      handleError(error);
+      handleError(error,toast.error);
     }
   });
 };

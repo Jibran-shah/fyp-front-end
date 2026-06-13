@@ -7,6 +7,7 @@ export function useMarketplaceProductActions() {
   const addToCartMutation = useAddToCart();
 
   const handleCardClick = (product) => {
+    console.log(product)
     navigate(`/products/${product._id}`);
   };
 

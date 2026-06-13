@@ -16,7 +16,6 @@ export default function MarketplaceProductCard({
 }) {
   const handleAddToCart = (e) => {
     e.stopPropagation();
-
     onAddToCart(product)
   };
 

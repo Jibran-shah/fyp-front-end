@@ -1,25 +1,20 @@
-export const buildServiceProviderFormData = (data) => {
-  const formData = new FormData();
+export function buildServiceProviderPayload(data) {
+  return {
+    title: data.title?.trim(),
+    description: data.description?.trim() || "",
+    skills: Array.isArray(data.skills) ? data.skills : [],
+    experienceYears: Number(data.experienceYears || 0),
+    fullAddress: data.fullAddress?.trim() || "",
 
-  if (data.title) formData.append("title", data.title);
-  if (data.description) formData.append("description", data.description);
-  if (data.experienceYears !== undefined)
-    formData.append("experienceYears", data.experienceYears);
+    // geo (optional)
+    locationLat:
+      typeof data.locationLat === "number"
+        ? data.locationLat
+        : undefined,
 
-  if (data.fullAddress)
-    formData.append("fullAddress", data.fullAddress);
-
-  if (data.locationLat)
-    formData.append("locationLat", data.locationLat);
-
-  if (data.locationLn)
-    formData.append("locationLn", data.locationLn);
-
-  if (Array.isArray(data.skills)) {
-    data.skills.forEach((s) =>
-      formData.append("skills[]", s)
-    );
-  }
-
-  return formData;
-};
+    locationLn:
+      typeof data.locationLn === "number"
+        ? data.locationLn
+        : undefined,
+  };
+}

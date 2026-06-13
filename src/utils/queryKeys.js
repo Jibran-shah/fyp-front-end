@@ -27,6 +27,7 @@ export const queryKeys = {
 
       list: (filters = {}) => ["profile", "buyer", "list", filters],
     },
+    fullProfile: (id)=>["full-profile", id]
   },
 
   services: {

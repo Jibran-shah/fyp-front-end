@@ -1,23 +1,103 @@
-import { Stack, Button } from "@mui/material";
-import InputField from "../common/InputField";
+import { Stack, Button, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
+import { useForm } from "react-hook-form";
 
-export default function CategoryForm({ mode = "create" }) {
+import { InputField } from "../../common/InputField";
+import CategoryTreeSelect from "./CategoryTreeSelect";
+import {CATEGORY_APPLIES_TO_ARRAY } from "../../../../../backend/constants/category.constants";
+
+/* =========================
+   KEEP YOUR BACKEND VALUES
+========================= */
+const APPLIES_TO_OPTIONS = CATEGORY_APPLIES_TO_ARRAY.map((v) => ({
+  label: v.charAt(0).toUpperCase() + v.slice(1).toLowerCase(),
+  value: v
+}));
+
+export default function CategoryForm({
+  mode = "create",
+  onSubmit,
+  loading = false,
+  initialValues = {}
+}) {
+  const { register, handleSubmit, setValue, watch } = useForm({
+    defaultValues: {
+      name: initialValues.name || "",
+      description: initialValues.description || "",
+      appliesTo: initialValues.appliesTo || CATEGORY_APPLIES_TO_ARRAY,
+      parentCategory: initialValues.parentCategory || null
+    }
+  });
+
+  const appliesTo = watch("appliesTo") || [];
+  const parentCategory = watch("parentCategory");
+
+  /* =========================
+     TOGGLE
+  ========================= */
+  const handleAppliesToChange = (value) => {
+    const current = appliesTo || [];
+
+    const updated = current.includes(value)
+      ? current.filter((v) => v !== value)
+      : [...current, value];
+
+    // ✅ SAFE + SCALABLE FILTER
+    const clean = [...new Set(updated)].filter((v) =>
+      CATEGORY_APPLIES_TO_ARRAY.includes(v)
+    );
+
+    setValue("appliesTo", clean, {
+      shouldDirty: true,
+      shouldValidate: true
+    });
+  };
+
+  const handleParentChange = (value) => {
+    setValue("parentCategory", value || null);
+  };
+
+  const submitHandler = (data) => {
+    const cleanPayload = {
+      ...data,
+      parentCategory: data.parentCategory || null,
+
+      appliesTo: [...new Set(data.appliesTo || [])].filter((v) =>
+        CATEGORY_APPLIES_TO_ARRAY.includes(v)
+      )
+    };
+
+    onSubmit?.(cleanPayload);
+  };
+
   return (
-    <Stack spacing={2}>
-      <InputField label="Name" name="name" />
-      <InputField label="Description" name="description" />
-      <InputField label="Parent Category" name="parentCategory" />
-      <InputField label="Applies To (product/service)" name="appliesTo" />
+    <Stack component="form" spacing={2} onSubmit={handleSubmit(submitHandler)}>
+      <InputField label="Name" name="name" register={register} />
+      <InputField label="Description" name="description" register={register} />
 
-      <Button variant="contained">
+      <CategoryTreeSelect
+        value={parentCategory}
+        onChange={handleParentChange}
+        label="Parent Category"
+      />
+
+      <FormGroup>
+        {APPLIES_TO_OPTIONS.map((opt) => (
+          <FormControlLabel
+            key={opt.value}
+            control={
+              <Checkbox
+                checked={appliesTo.includes(opt.value)}
+                onChange={() => handleAppliesToChange(opt.value)}
+              />
+            }
+            label={opt.label}
+          />
+        ))}
+      </FormGroup>
+
+      <Button type="submit" variant="contained" disabled={loading}>
         {mode === "create" ? "Create" : "Update"}
       </Button>
-
-      {mode === "edit" && (
-        <Button color="error" variant="outlined">
-          Cancel
-        </Button>
-      )}
     </Stack>
   );
 }

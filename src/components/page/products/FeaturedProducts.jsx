@@ -1,5 +1,5 @@
 import { useMarketplaceProductActions } from "../../../hooks/ui/marketplace/useMarketplaceProductActions";
-import {useGetProducts} from "../../../hooks/api/products/useGetProducts"
+import {useGetProducts} from "../../../hooks/api/products/products.hooks"
 
 import { Section } from "../../common/layout/Section";
 import MarketplaceProductCard from "../../common/marketplace/cards/MarketplaceProductCard";

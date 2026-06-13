@@ -6,7 +6,7 @@ import {
   Stack
 } from "@mui/material";
 
-import InputField from "../../components/common/InputField";
+import {InputField} from "../../components/common/InputField";
 
 export default function CreateWithdrawRequestPage() {
   return (

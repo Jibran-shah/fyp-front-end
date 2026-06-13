@@ -1,22 +1,29 @@
 import {
   Paper,
   Stack,
-  Button
+  Button,
+  Typography
 } from "@mui/material";
 
-import InputField from "../../common/InputField";
+import { InputField } from "../../common/InputField";
 
 export default function SellerProfileForm({
-  register,
-  errors,
+  form,
   onSubmit,
   submitText = "Save",
-  isLoading = false
+  isLoading = false,
+  locationStatus,
+  locationError
 }) {
   return (
     <Paper
       component="form"
-      onSubmit={onSubmit}
+      onSubmit={form.handleSubmit(
+        onSubmit,
+        (errors) => {
+          console.log("VALIDATION ERRORS", errors);
+        }
+      )}
       sx={{
         p: 4,
         width: "100%",
@@ -24,47 +31,52 @@ export default function SellerProfileForm({
       }}
     >
       <Stack spacing={2}>
+
+        {locationStatus === "requesting" && (
+          <Typography variant="body2" color="text.secondary">
+            Detecting your location...
+          </Typography>
+        )}
+
+        {locationStatus === "granted" && (
+          <Typography variant="body2" color="success.main">
+            Location detected successfully
+          </Typography>
+        )}
+
+        {locationError && (
+          <Typography variant="body2" color="error">
+            {locationError}
+          </Typography>
+        )}
+
         <InputField
           label="Shop Name"
           name="shopName"
-          register={register}
-          error={errors?.shopName}
+          register={form.register}
+          error={form.formState.errors.shopName}
         />
 
         <InputField
           label="Shop Description"
           name="shopDescription"
-          register={register}
-          error={errors?.shopDescription}
+          register={form.register}
+          error={form.formState.errors.shopDescription}
         />
 
         <InputField
           label="Shop Logo"
-          name="shopLogo"
+          name="shopLogoFile"
           type="file"
-          register={register}
-          error={errors?.shopLogo}
+          register={form.register}
+          error={form.formState.errors.shopLogoFile}
         />
 
         <InputField
           label="Full Address"
           name="fullAddress"
-          register={register}
-          error={errors?.fullAddress}
-        />
-
-        <InputField
-          label="Latitude"
-          name="latitude"
-          register={register}
-          error={errors?.latitude}
-        />
-
-        <InputField
-          label="Longitude"
-          name="longitude"
-          register={register}
-          error={errors?.longitude}
+          register={form.register}
+          error={form.formState.errors.fullAddress}
         />
 
         <Button

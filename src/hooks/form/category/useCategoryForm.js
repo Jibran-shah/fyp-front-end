@@ -6,6 +6,10 @@ export const useCategoryForm = (defaultValues = {}) => {
       name: "",
       description: "",
       parentCategory: null,
+
+      // ✅ NEW FIELD (IMPORTANT)
+      appliesTo: ["PRODUCT", "SERVICE"],
+
       ...defaultValues
     }
   });

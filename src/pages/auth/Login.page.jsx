@@ -1,8 +1,8 @@
-import { Stack, Box, Button } from "@mui/material";
+import { Stack, Box, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 import AuthLayout from "../../components/page/auth/AuthLayout";
-import InputField from "../../components/common/InputField";
+import { InputField } from "../../components/common/InputField";
 
 import { useLogin } from "../../hooks/api/auth/useLogin";
 import { useLoginForm } from "../../hooks/form/auth/useLoginForm";
@@ -18,23 +18,38 @@ export default function LoginPage() {
   const loginMutation = useLogin();
   const form = useLoginForm();
 
-  useAuthRedirectIfLoggedIn("/");
+  useAuthRedirectIfLoggedIn();
 
   const onSubmit = (data) => {
+
+    form.clearErrors("root");
+
     loginMutation.mutate(data, {
       onSuccess: (res) => {
+        console.log("login res",res)
         const user = res?.data?.user;
-        dispatch(login(user))
-        if (user?.baseProfile) {
-          navigate("/");
-        } else {
+        dispatch(login(user));
+        if (!user?.isEmailVerified) {
+          navigate("/emailNotVerifiedGate");
+        } else if (!user?.baseProfile) {
           navigate("/profile/create");
+        } else {
+          navigate("/home");
         }
+      },
+
+      onError: (error) => {
+        const message =
+          error?.response?.data?.message ||
+          "Either email or password is incorrect";
+
+        form.setError("root", {
+          type: "manual",
+          message,
+        });
       },
     });
   };
-
-  console.log("LOGIN MUTATION:", loginMutation);
 
   return (
     <AuthLayout
@@ -59,6 +74,19 @@ export default function LoginPage() {
           register={form.register}
           error={form.formState.errors.password}
         />
+
+        {/* GLOBAL LOGIN ERROR */}
+        {form.formState.errors.root && (
+          <Typography
+            sx={{
+              color: "error.main",
+              fontSize: 13,
+              mt: 0.5,
+            }}
+          >
+            {form.formState.errors.root.message}
+          </Typography>
+        )}
 
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           <Button

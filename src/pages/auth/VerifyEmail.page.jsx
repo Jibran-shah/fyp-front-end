@@ -1,37 +1,59 @@
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-
+import { useEffect, useRef } from "react";
 import { useVerifyEmail } from "../../hooks/api/auth/useVerifyEmail";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../../store/slices/auth.slice"
 
 export default function VerifyEmailPage() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const mutation = useVerifyEmail();
+  const currentUser = useSelector((state) => state.auth.user);
+
+  const { mutate, isPending, isError, isSuccess } = useVerifyEmail();
+
+  const hasRunRef = useRef(false);
+
+  const userId = params.get("userId");
+  const token = params.get("token");
 
   useEffect(() => {
-    const userId = params.get("userId");
-    const token = params.get("token");
-
     if (!userId || !token) return;
 
-    mutation.mutate(
+    if (hasRunRef.current) return;
+    hasRunRef.current = true;
+
+    mutate(
       { userId, token },
       {
         onSuccess: () => {
-          navigate("/login");
-        }
+          // Update Redux auth state
+          if (currentUser) {
+            dispatch(
+              login({
+                ...currentUser,
+                isEmailVerified: true,
+              })
+            );
+          }
+
+          const url = currentUser.baseProfile ? "/login" : "/profile/create"
+    
+          setTimeout(() => {
+            navigate(url, { replace: true });
+          }, 500);
+        },
+        onError: () => {
+          hasRunRef.current = false;
+        },
       }
     );
-  }, [params, mutation, navigate]);
+  }, []);
 
-  if (mutation.isPending) {
-    return <div>Verifying email...</div>;
-  }
+  if (isPending) return <div>Verifying email...</div>;
+  if (isError) return <div>Email verification failed.</div>;
+  if (isSuccess) return <div>Email verified successfully. Redirecting...</div>;
 
-  if (mutation.isError) {
-    return <div>Email verification failed.</div>;
-  }
-
-  return null;
+  return <div>Invalid verification link.</div>;
 }

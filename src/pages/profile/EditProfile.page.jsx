@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Paper, Typography } from "@mui/material";
 
-import { useBuyerProfile } from "../../hooks/api/profile/useBuyerProfile";
-import { useUpdateBuyerProfile } from "../../hooks/api/profile/useUpdateBuyerProfile";
+import { useBuyerProfile } from "../../hooks/api/profile/buyerProfile.hooks";
+import { useUpdateBuyerProfile } from "../../hooks/api/profile/buyerProfile.hooks";
 import { useEditProfileForm } from "../../hooks/form/profile/useEditProfileForm";
 
 import ProfileForm from "../../components/page/profile/ProfileForm";
