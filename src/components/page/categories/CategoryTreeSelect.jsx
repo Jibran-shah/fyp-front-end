@@ -5,34 +5,34 @@ import {
   Popover,
   CircularProgress,
   Paper,
-  Button
+  Button,
+  InputAdornment,
 } from "@mui/material";
+
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import CategoryIcon from "@mui/icons-material/Category";
 
 import { useCategoryTree } from "../../../hooks/api/categories/categories.hooks";
 
 /* =========================
-   TREE NODE (UNCHANGED UI)
+   TREE NODE (UNCHANGED LOGIC)
 ========================= */
 function TreeNode({ node, level, value, onSelect }) {
   const hasChildren = node.children?.length > 0;
 
-  const handleClick = () => {
-    console.log("[TreeNode] selected:", node._id);
-    onSelect(node._id); // IMPORTANT: only return ID
-  };
-
   return (
     <Box sx={{ pl: level * 2 }}>
       <Box
-        onClick={handleClick}
+        onClick={() => onSelect(node._id)}
         sx={{
           cursor: "pointer",
-          py: 0.5,
+          py: 0.4,
           px: 1,
           borderRadius: 1,
+          fontSize: 14,
           bgcolor: value === node._id ? "primary.light" : "transparent",
           color: value === node._id ? "primary.contrastText" : "text.primary",
-          "&:hover": { bgcolor: "action.hover" }
+          "&:hover": { bgcolor: "action.hover" },
         }}
       >
         {node.name}
@@ -53,21 +53,19 @@ function TreeNode({ node, level, value, onSelect }) {
 }
 
 /* =========================
-   MAIN COMPONENT (RHF SAFE)
+   MAIN COMPONENT (COMPACT INPUT STYLE)
 ========================= */
 export default function CategoryTreeSelect({
   value,
   onChange,
-  label = "Category"
+  label = "Category",
 }) {
   const { data: tree, isLoading, isError } = useCategoryTree();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
-  // =========================
-  // OPTIMIZED LABEL RESOLUTION (NO RECURSION EACH RENDER)
-  // =========================
+  // label resolution
   const selectedLabel = useMemo(() => {
     if (!tree || !value) return "";
 
@@ -75,77 +73,87 @@ export default function CategoryTreeSelect({
 
     while (stack.length) {
       const node = stack.pop();
-
       if (node._id === value) return node.name;
-
-      if (node.children) {
-        stack.push(...node.children);
-      }
+      if (node.children) stack.push(...node.children);
     }
 
     return "";
   }, [tree, value]);
 
-  // =========================
-  // HANDLERS
-  // =========================
-  const handleOpen = (e) => {
-    console.log("[CategoryTreeSelect] open");
-    setAnchorEl(e.currentTarget);
-  };
-
-  const handleClose = () => {
-    console.log("[CategoryTreeSelect] close");
-    setAnchorEl(null);
-  };
-
   const handleSelect = (id) => {
-    console.log("[CategoryTreeSelect] selected:", id);
-    onChange?.(id); // RHF-compatible
+    onChange?.(id);
     setAnchorEl(null);
   };
 
   return (
     <>
-      {/* INPUT BOX */}
+      {/* INPUT LOOK */}
       <Paper
-        onClick={handleOpen}
+        onClick={(e) => setAnchorEl(e.currentTarget)}
+        elevation={0}
         sx={{
-          p: 1.5,
+          display: "flex",
+          alignItems: "center",
+          height: 40,
+          px: 1.2,
+          border: "1px solid",
+          borderColor: "divider",
+          borderRadius: 1.5,
           cursor: "pointer",
-          border: "1px solid #ddd",
-          "&:hover": { borderColor: "primary.main" }
+          transition: "all 0.15s ease",
+          "&:hover": {
+            borderColor: "primary.main",
+          },
         }}
       >
-        <Typography variant="caption" color="text.secondary">
-          {label}
-        </Typography>
+        <InputAdornment position="start" sx={{ mr: 0.5 }}>
+          <CategoryIcon fontSize="small" />
+        </InputAdornment>
 
-        <Typography>
-          {selectedLabel || "Select category"}
-        </Typography>
+        <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Typography
+            variant="caption"
+            sx={{ display: "block", color: "text.secondary", lineHeight: 1 }}
+          >
+            {label}
+          </Typography>
+
+          <Typography
+            variant="body2"
+            sx={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              lineHeight: 1.2,
+            }}
+          >
+            {selectedLabel || "Select category"}
+          </Typography>
+        </Box>
+
+        <ArrowDropDownIcon fontSize="small" />
       </Paper>
 
       {/* POPUP */}
       <Popover
         open={open}
         anchorEl={anchorEl}
-        onClose={handleClose}
+        onClose={() => setAnchorEl(null)}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "left"
+          horizontal: "left",
         }}
       >
-        <Box sx={{ width: 300, maxHeight: 400, overflow: "auto", p: 1 }}>
+        <Box sx={{ width: 320, maxHeight: 360, overflow: "auto", p: 1 }}>
           {isLoading && (
-            <Box display="flex" gap={1} alignItems="center">
+            <Box display="flex" gap={1} alignItems="center" p={1}>
               <CircularProgress size={18} />
-              Loading...
+              <Typography variant="body2">Loading...</Typography>
             </Box>
           )}
 
           {isError && (
-            <Typography color="error">
+            <Typography color="error" p={1}>
               Failed to load categories
             </Typography>
           )}
@@ -163,11 +171,11 @@ export default function CategoryTreeSelect({
             ))}
 
           {!isLoading && !isError && (!tree || tree.length === 0) && (
-            <Typography>No categories found</Typography>
+            <Typography p={1}>No categories found</Typography>
           )}
 
           <Box mt={1}>
-            <Button fullWidth size="small" onClick={handleClose}>
+            <Button fullWidth size="small" onClick={() => setAnchorEl(null)}>
               Close
             </Button>
           </Box>

@@ -9,7 +9,7 @@ import {
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { useCreateBooking } from "../../hooks/api/bookings/useCreateBooking";
+import { useCreateBooking } from "../../hooks/api/bookings/bookings.hooks";
 
 export default function CreateBookingPage() {
   const { serviceId, serviceProviderId } = useParams();

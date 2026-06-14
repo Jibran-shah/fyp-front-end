@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import ChatSidebar from "../../components/page/chat/ChatSidebar";
 import PageContainer from "../../components/common/layout/pageContainer/PageContainer";
-import { useGetUserDirectChats } from "../../hooks/api/directChats/useGetUserDirectChats";
+import { useGetUserDirectChats } from "../../hooks/api/directChats/directChats.hooks";
 
 export default function ChatsPage() {
   const navigate = useNavigate();

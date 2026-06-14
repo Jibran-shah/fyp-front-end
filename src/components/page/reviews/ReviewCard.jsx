@@ -1,24 +1,68 @@
-import { Paper, Typography, Stack, Button } from "@mui/material";
+import { Paper, Stack, Typography, Avatar, Rating, Box } from "@mui/material";
 
 export default function ReviewCard({ review }) {
+  const user = review?.user;
+  const name = user?.baseProfile?.name || "Anonymous User";
+  const avatar = user?.baseProfile?.profileAvatar?.file?.url || "";
+
   return (
-    <Paper sx={{ p: 2 }}>
-      <Stack direction="row" justifyContent="space-between">
-        <div>
-          <Typography fontWeight={600}>
-            Rating: {review?.rating || 5}/5
-          </Typography>
+    <Paper
+      elevation={0}
+      sx={{
+        p: 2,
+        border: "1px solid",
+        borderColor: "divider",
+        borderRadius: 3,
+        transition: "0.2s",
+        "&:hover": {
+          boxShadow: 2
+        }
+      }}
+    >
+      <Stack spacing={1.5}>
 
-          <Typography variant="body2">
-            {review?.comment || "Sample review text"}
-          </Typography>
+        {/* HEADER */}
+        <Stack direction="row" spacing={1.5} alignItems="center">
 
-          <Typography variant="caption">
-            Entity: {review?.entityType || "Product"}
-          </Typography>
-        </div>
+          <Avatar
+            src={avatar}
+            alt={name}
+            sx={{ width: 42, height: 42 }}
+          >
+            {name?.charAt(0)}
+          </Avatar>
 
-        <Button variant="outlined">View</Button>
+          <Box>
+            <Typography fontWeight={600} lineHeight={1.2}>
+              {name}
+            </Typography>
+
+            <Typography variant="caption" color="text.secondary">
+              Verified reviewer
+            </Typography>
+          </Box>
+
+        </Stack>
+
+        {/* RATING */}
+        <Rating
+          value={review?.rating || 0}
+          precision={0.5}
+          readOnly
+          size="small"
+        />
+
+        {/* COMMENT */}
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.primary",
+            lineHeight: 1.6
+          }}
+        >
+          {review?.comment || "No comment provided."}
+        </Typography>
+
       </Stack>
     </Paper>
   );

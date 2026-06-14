@@ -6,54 +6,40 @@ import {
   Stack
 } from "@mui/material";
 
-import { useState } from "react";
-import {InputField} from "../../components/common/InputField";
-import { useCreateService } from "../../hooks/api/services/useCreateService";
+import { InputField } from "../../components/common/InputField";
+import { useCreateService } from "../../hooks/api/services/services.hooks";
+import { useServiceForm } from "../../hooks/form/services/useService.form";
+import CategoryTreeSelect from "../../components/page/categories/CategoryTreeSelect";
+import { Controller } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateServicePage() {
-  const { mutate: createService, isLoading } = useCreateService();
+  console.log("Create Service page mounted");
 
-  const [form, setForm] = useState({
-    name: "",
-    description: "",
-    category: "",
-    price: "",
-    durationHours: "",
-    fullAddress: "",
-    latitude: "",
-    longitude: ""
-  });
+  const navigate = useNavigate()
 
-  const handleChange = (e) => {
-    setForm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-  };
+  const { mutate: createService, isPending } =
+    useCreateService();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control
+  } = useServiceForm();
+
+  const onSubmit = (data) => {
+    console.log("Form Data:", data);
 
     createService(
       {
-        ...form,
-        price: Number(form.price),
-        durationHours: Number(form.durationHours),
-        latitude: form.latitude ? Number(form.latitude) : null,
-        longitude: form.longitude ? Number(form.longitude) : null
+        ...data,
+        price: Number(data.price),
+        durationHours: Number(data.durationHours)
       },
       {
         onSuccess: () => {
-          setForm({
-            name: "",
-            description: "",
-            category: "",
-            price: "",
-            durationHours: "",
-            fullAddress: "",
-            latitude: "",
-            longitude: ""
-          });
+          reset();
         }
       }
     );
@@ -69,14 +55,18 @@ export default function CreateServicePage() {
     >
       <Paper
         component="form"
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         sx={{
           p: 4,
           width: "100%",
           maxWidth: 700
         }}
       >
-        <Typography variant="h5" fontWeight={600} mb={3}>
+        <Typography
+          variant="h5"
+          fontWeight={600}
+          mb={3}
+        >
           Create Service
         </Typography>
 
@@ -84,68 +74,57 @@ export default function CreateServicePage() {
           <InputField
             label="Service Name"
             name="name"
-            value={form.name}
-            onChange={handleChange}
+            register={register}
           />
 
           <InputField
             label="Description"
             name="description"
-            value={form.description}
-            onChange={handleChange}
+            register={register}
           />
 
-          <InputField
-            label="Category"
+          <Controller
             name="category"
-            value={form.category}
-            onChange={handleChange}
+            control={control}
+            render={({ field }) => (
+              <CategoryTreeSelect
+                value={field.value}
+                onChange={field.onChange}
+                label="Category"
+              />
+            )}
           />
 
           <InputField
             label="Price"
             name="price"
             type="number"
-            value={form.price}
-            onChange={handleChange}
+            register={register}
           />
 
           <InputField
             label="Duration Hours"
             name="durationHours"
             type="number"
-            value={form.durationHours}
-            onChange={handleChange}
+            register={register}
           />
 
           <InputField
             label="Address"
             name="fullAddress"
-            value={form.fullAddress}
-            onChange={handleChange}
-          />
-
-          <InputField
-            label="Latitude"
-            name="latitude"
-            value={form.latitude}
-            onChange={handleChange}
-          />
-
-          <InputField
-            label="Longitude"
-            name="longitude"
-            value={form.longitude}
-            onChange={handleChange}
+            register={register}
           />
 
           <Button
             variant="contained"
             type="submit"
-            disabled={isLoading}
+            disabled={isPending}
           >
-            {isLoading ? "Creating..." : "Create Service"}
+            {isPending
+              ? "Creating..."
+              : "Create Service"}
           </Button>
+          <Button onClick={()=>{navigate("/profile")}}>Go to profile</Button>
         </Stack>
       </Paper>
     </Box>

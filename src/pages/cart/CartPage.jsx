@@ -4,16 +4,16 @@ import SummaryCard from "../../components/common/SummaryCard"
 import PageContainer from "../../components/common/layout/pageContainer/PageContainer"
 import EmptyCart from "../../components/page/cart/EmptyCart"
 import CartItemCard from "../../components/page/cart/CartItemCard"
-import { useCart } from "../../hooks/api/cart/useCart";
-import { useClearCart } from "../../hooks/api/cart/useClearCart";
+import { useClearCart,useCart } from "../../hooks/api/cart/cart.hooks";
 
 export default function CartPage() {
   const { data: cart, isLoading } = useCart();
   const { mutate: clearCart } = useClearCart();
 
-  if (isLoading) return null;
-
+  if (isLoading) return (<Typography>loading...</Typography>);
   if (!cart?.items?.length) {
+    console.log("cart",cart)
+    console.log("cart items",cart?.items)
     return <EmptyCart />;
   }
 
@@ -25,7 +25,7 @@ export default function CartPage() {
 
       <Stack spacing={2}>
         {cart.items.map((item) => (
-          <CartItemCard key={item._id} item={item} />
+          <CartItemCard key={item.product} item={item}/>
         ))}
       </Stack>
 
@@ -42,7 +42,7 @@ export default function CartPage() {
             Clear Cart
           </Button>
 
-          <Button variant="contained">
+          <Button variant="contained" >
             Checkout
           </Button>
         </Stack>

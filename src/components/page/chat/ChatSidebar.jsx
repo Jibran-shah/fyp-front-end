@@ -1,4 +1,5 @@
-import { Box, Stack, Paper, Typography, Avatar, Button } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
+import ChatCard from "./ChatCard";
 
 export default function ChatSidebar({ chats = [], onSelectChat }) {
   return (
@@ -8,30 +9,12 @@ export default function ChatSidebar({ chats = [], onSelectChat }) {
           <Typography>No chats yet</Typography>
         )}
 
-        {chats?.map((chat) => (
-          <Paper
+        {chats.map((chat) => (
+          <ChatCard
             key={chat.id}
-            sx={{ p: 2, cursor: "pointer" }}
-            onClick={() => onSelectChat?.(chat.id)}
-          >
-            <Stack direction="row" spacing={2} alignItems="center">
-              <Avatar />
-
-              <Box flex={1}>
-                <Typography fontWeight={600}>
-                  {chat.name}
-                </Typography>
-
-                <Typography variant="body2">
-                  {chat.lastMessage?.content || "No messages yet"}
-                </Typography>
-              </Box>
-
-              <Button size="small">
-                Open
-              </Button>
-            </Stack>
-          </Paper>
+            chat={chat}
+            onSelect={onSelectChat}
+          />
         ))}
       </Stack>
     </Box>

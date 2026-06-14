@@ -1,24 +1,20 @@
 import { Stack, Typography } from "@mui/material";
-
 import ReviewCard from "./ReviewCard";
 
 export default function ReviewList({ reviews = [] }) {
-  if (!reviews.length) {
-    return (
-      <Typography>
-        No reviews found
-      </Typography>
-    );
-  }
-
   return (
-    <Stack spacing={2}>
-      {reviews.map((review) => (
-        <ReviewCard
-          key={review._id}
-          review={review}
-        />
-      ))}
+    <Stack spacing={1}>
+      <Typography fontWeight={700}>Other Reviews</Typography>
+
+      {reviews.length === 0 ? (
+        <Typography variant="body2" color="text.secondary">
+          No reviews yet
+        </Typography>
+      ) : (
+        reviews.map((review) => (
+          <ReviewCard key={review._id} review={review} />
+        ))
+      )}
     </Stack>
   );
 }

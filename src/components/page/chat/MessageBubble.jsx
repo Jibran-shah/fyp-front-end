@@ -1,11 +1,14 @@
 import { Paper, Typography, Stack } from "@mui/material";
 import MessageActions from "./MessageActions";
-
+import {useSelector} from "react-redux"
 export default function MessageBubble({ message }) {
+  const {user} = useSelector((state)=>state.auth)
+  const isMine = message?.senderId?._id === user?.id;
+
   return (
     <Stack
       sx={{
-        alignSelf: message.isMine ? "flex-end" : "flex-start",
+        alignSelf: isMine ? "flex-end" : "flex-start",
         maxWidth: "60%"
       }}
       spacing={0.5}
@@ -13,20 +16,18 @@ export default function MessageBubble({ message }) {
       <Paper
         sx={{
           p: 1.5,
-          bgcolor: message.isMine ? "primary.main" : "grey.200",
-          color: message.isMine ? "#fff" : "#000"
+          bgcolor: isMine ? "primary.main" : "grey.200",
+          color: isMine ? "#fff" : "#000"
         }}
       >
         <Typography variant="body2">
-          {message.content}
+          {message.text}
         </Typography>
       </Paper>
-
-      {/* optional actions */}
-      <MessageActions
-        onEdit={message.isMine}
-        onDelete={message.isMine}
-      />
+      <MessageActions/>
+        {/* // onEdit={message.isMine}
+        // onDelete={message.isMine} */}
+      
     </Stack>
   );
 }

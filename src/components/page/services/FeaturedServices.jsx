@@ -1,6 +1,6 @@
 import Grid from "@mui/material/Grid";
 
-import { useServices } from "../../../hooks/api/services/useServices";
+import { useServices } from "../../../hooks/api/services/services.hooks";
 
 import { Section } from "../../common/layout/Section";
 import MarketplaceServiceCard from "../../common/marketplace/cards/MarketplaceServiceCard";

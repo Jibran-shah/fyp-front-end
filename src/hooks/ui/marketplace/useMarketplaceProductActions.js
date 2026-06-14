@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useAddToCart } from "../../api/cart/useAddToCart";
+import { useAddToCart } from "../../api/cart/cart.hooks";
 
 
 export function useMarketplaceProductActions() {

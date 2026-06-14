@@ -63,7 +63,7 @@ export default function Navbar() {
           <>
             {console.log("[Navbar] render UserAvatarButton")}
             <UserAvatarButton
-              avatar={profile?.avatar}
+              avatar={profile?.profileAvatar.file.url}
               route="/profile"
             />
           </>

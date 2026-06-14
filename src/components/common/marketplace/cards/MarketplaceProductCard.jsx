@@ -14,6 +14,8 @@ export default function MarketplaceProductCard({
   onCardClick,
   onAddToCart,
 }) {
+
+  console.log("Product Card:",product)
   const handleAddToCart = (e) => {
     e.stopPropagation();
     onAddToCart(product)
@@ -69,7 +71,7 @@ export default function MarketplaceProductCard({
       </IconButton>
 
       {/* IMAGE */}
-      <MarketplaceCardMedia image={product.image} />
+      <MarketplaceCardMedia images={product.images} />
 
       {/* CONTENT (COMPACT) */}
       <Box sx={{ p: 1.5 }}>

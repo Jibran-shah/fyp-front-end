@@ -1,9 +1,4 @@
-import {
-  Avatar,
-  Button,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Avatar, Button, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 import MarketplaceCardContent from "../marketplaceCardContent/MarketplaceCardContent";
@@ -16,11 +11,17 @@ import StatusChip from "../StatusChip";
 export default function MarketplaceServiceCard({ service }) {
   const navigate = useNavigate();
 
-  const handleBook = () => {
-    navigate(`/book/${service._id}/${service.provider?._id}`);
+  const handleCardClick = () => {
+    navigate(`/services/${service._id}`);
   };
 
-  const handleProviderClick = () => {
+  const handleBook = (e) => {
+    e.stopPropagation(); // 👈 prevents card navigation
+    navigate(`/booking/create/${service._id}`);
+  };
+
+  const handleProviderClick = (e) => {
+    e.stopPropagation(); // optional but recommended
     if (service?.provider?._id) {
       navigate(`/provider/${service.provider._id}`);
     }
@@ -28,8 +29,10 @@ export default function MarketplaceServiceCard({ service }) {
 
   return (
     <MarketplaceCardShell
+      onClick={handleCardClick}
       sx={{
         maxWidth: "100%",
+        cursor: "pointer",
         transition: "0.2s ease",
         "&:hover": {
           transform: "translateY(-3px)",
@@ -41,7 +44,7 @@ export default function MarketplaceServiceCard({ service }) {
         title={service.name}
         subtitle={service.categoryPath}
       >
-        {/* PROVIDER (CLICKABLE) */}
+        {/* PROVIDER */}
         <Stack
           direction="row"
           spacing={1.2}
@@ -60,7 +63,7 @@ export default function MarketplaceServiceCard({ service }) {
           }}
         >
           <Avatar
-            src={service.providerAvatar}
+            src={service?.provider?.user?.baseProfile?.profileAvatar?.file?.url}
             sx={{
               width: 36,
               height: 36,
@@ -69,16 +72,12 @@ export default function MarketplaceServiceCard({ service }) {
             }}
           />
 
-          <Typography
-            variant="body2"
-            fontWeight={600}
-            noWrap
-          >
-            {service.providerName || "Provider"}
+          <Typography variant="body2" fontWeight={600} noWrap>
+            {service.provider?.title || "Provider"}
           </Typography>
         </Stack>
 
-        {/* SERVICE DESCRIPTION */}
+        {/* DESCRIPTION */}
         <Typography
           variant="body2"
           color="text.secondary"
@@ -96,13 +95,8 @@ export default function MarketplaceServiceCard({ service }) {
             "High quality professional service delivered with precision and reliability."}
         </Typography>
 
-        {/* SERVICE META */}
-        <MetaRow
-          sx={{
-            mt: 2,
-            justifyContent: "space-between",
-          }}
-        >
+        {/* META */}
+        <MetaRow sx={{ mt: 2, justifyContent: "space-between" }}>
           <PriceBadge price={service.price} />
           <StatusChip status={service.status} />
         </MetaRow>
@@ -116,29 +110,20 @@ export default function MarketplaceServiceCard({ service }) {
         >
           <RatingBadge rating={service.ratingAverage} />
 
-          {/* BEAUTIFUL BOOK BUTTON */}
           <Button
-            onClick={handleBook}
-            size="small"
-            sx={{
-              px: 2.5,
-              py: 0.8,
-              borderRadius: 2,
-              textTransform: "none",
-              fontWeight: 600,
-              fontSize: 12,
-              color: "white",
-              background:
-                "linear-gradient(135deg, #2563eb, #1d4ed8)",
-              boxShadow: "0px 4px 12px rgba(37,99,235,0.25)",
-              "&:hover": {
-                background:
-                  "linear-gradient(135deg, #1d4ed8, #1e40af)",
-                boxShadow: "0px 6px 16px rgba(37,99,235,0.35)",
-              },
-            }}
-          >
-            Book Service
+              onClick={handleBook}
+              size="small"
+              variant="contained"
+              sx={{
+                px: 2.5,
+                py: 0.8,
+                borderRadius: 2,
+                textTransform: "none",
+                fontWeight: 600,
+                fontSize: 12,
+              }}
+            >
+              Book Service
           </Button>
         </MetaRow>
       </MarketplaceCardContent>

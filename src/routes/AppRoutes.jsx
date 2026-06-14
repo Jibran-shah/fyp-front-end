@@ -51,6 +51,8 @@ import Layout from "./layout";
 
 import CategoryCreatePage from "../pages/categories/CreateCategory.page";
 import ProductSearchPage from "../pages/products/ProductsSearchPage";
+import CreateServicePage from "../pages/services/CreateService.page";
+import ServicesSearchPage from "../pages/services/ServicesSearch.page";
 
 
 export default function AppRoutes() {
@@ -84,9 +86,9 @@ export default function AppRoutes() {
         <Route path="/products/search" element={<ProductSearchPage/>}/>
         <Route path="/products/:id" element={<ProductDetailsPage />} />
         
-        
-
         <Route path="/services" element={<ServicesPage />} />
+        <Route path="/services/create" element={<CreateServicePage />} />
+        <Route path="/services/search" element={<ServicesSearchPage/>}/>
         <Route path="/services/:id" element={<ServiceDetailsPage />} />
 
         <Route

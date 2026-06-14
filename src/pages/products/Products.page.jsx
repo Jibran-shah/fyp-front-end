@@ -96,12 +96,6 @@ export default function ProductsPage() {
                 search: true,
                 searchPlaceholder: "Search products...",
 
-                categories: [
-                  { label: "Electronics", value: "electronics" },
-                  { label: "Fashion", value: "fashion" },
-                  { label: "Home", value: "home" },
-                ],
-
                 sortOptions: [
                   { label: "Newest", value: "-createdAt" },
                   { label: "Oldest", value: "createdAt" },

@@ -10,6 +10,7 @@ import { useAuthRedirectIfLoggedIn } from "../../hooks/api/auth/useAuthRedirectI
 
 import { useDispatch } from "react-redux";
 import { login } from "../../store/slices/auth.slice";
+import { connectSocket } from "../../socket/socket.manager";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ export default function LoginPage() {
         console.log("login res",res)
         const user = res?.data?.user;
         dispatch(login(user));
+        connectSocket();
         if (!user?.isEmailVerified) {
           navigate("/emailNotVerifiedGate");
         } else if (!user?.baseProfile) {

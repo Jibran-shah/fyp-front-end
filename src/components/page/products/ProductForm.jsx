@@ -25,11 +25,11 @@ export default function ProductForm({
       <Stack spacing={2}>
 
         {/* NORMAL INPUTS */}
-<InputField label="Product Name" name="name" register={register} />
-<InputField label="Description" name="description" register={register} />
-<InputField label="Price" type="number" name="price" register={register} />
-<InputField label="Quantity Available" type="number" name="quantityAvailable" register={register} />
-<InputField label="Full Address" name="fullAddress" register={register} />
+      <InputField label="Product Name" name="name" register={register} />
+      <InputField label="Description" name="description" register={register} />
+      <InputField label="Price" type="number" name="price" register={register} />
+      <InputField label="Quantity Available" type="number" name="quantityAvailable" register={register} />
+      <InputField label="Full Address" name="fullAddress" register={register} />
 
         {/* CATEGORY */}
         <Controller

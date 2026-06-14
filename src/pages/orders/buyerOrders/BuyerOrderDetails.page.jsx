@@ -1,14 +1,20 @@
 import { Typography, Stack, Button, Box } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import PageContainer from "../../components/common/PageContainer";
+import { useBuyerOrder } from "../../../hooks/api/buyerOrders/buyerOrder.hooks";
 
 export default function BuyerOrderDetailPage() {
   const navigate = useNavigate();
+  const { id } = useParams(); // 👈 get order id from URL
 
-  const order = null;
+  const {
+    data: order,
+    isLoading,
+    error,
+  } = useBuyerOrder(id);
 
-  if (!order) {
+  if (isLoading) {
     return (
       <PageContainer>
         <Typography>Loading order...</Typography>
@@ -16,20 +22,30 @@ export default function BuyerOrderDetailPage() {
     );
   }
 
+  if (error) {
+    return (
+      <PageContainer>
+        <Typography>Error loading order</Typography>
+      </PageContainer>
+    );
+  }
+
+  if (!order) {
+    return (
+      <PageContainer>
+        <Typography>No order found</Typography>
+      </PageContainer>
+    );
+  }
+
   return (
     <PageContainer>
-      <Typography variant="h5">
-        Order Details
-      </Typography>
+      <Typography variant="h5">Order Details</Typography>
 
       <Stack spacing={2} mt={2}>
-        <Typography>
-          Status: {order.status}
-        </Typography>
+        <Typography>Status: {order.status}</Typography>
 
-        <Typography>
-          Total: {order.totalAmount}
-        </Typography>
+        <Typography>Total: {order.totalAmount}</Typography>
 
         <Typography>
           Payment: {order.paymentTransaction || "Pending"}
@@ -39,24 +55,21 @@ export default function BuyerOrderDetailPage() {
         <Box>
           <Typography variant="h6">Items</Typography>
 
-          {order.items.map((item, idx) => (
+          {order.items?.map((item, idx) => (
             <Box key={idx}>
               {item.name} x {item.quantity}
             </Box>
           ))}
         </Box>
 
-        {/* ACTIONS */}
+        {/* ACTION */}
         {order.status === "PENDING" && (
           <Button color="error" variant="contained">
             Cancel Order
           </Button>
         )}
 
-        <Button
-          variant="outlined"
-          onClick={() => navigate("/orders/my")}
-        >
+        <Button variant="outlined" onClick={() => navigate("/orders/my")}>
           Back
         </Button>
       </Stack>

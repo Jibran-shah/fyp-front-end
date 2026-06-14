@@ -1,13 +1,38 @@
 import { Typography, Stack, Button } from "@mui/material";
+import { useParams } from "react-router-dom";
+
 import PageContainer from "../../components/common/PageContainer";
+import { useSellerOrder } from "../../../hooks/api/sellerOrders/sellerOrder.hooks";
 
 export default function SellerOrderDetailPage() {
-  const order = null;
+  const { id } = useParams();
+
+  const {
+    data: order,
+    isLoading,
+    error,
+  } = useSellerOrder(id);
+
+  if (isLoading) {
+    return (
+      <PageContainer>
+        <Typography>Loading order...</Typography>
+      </PageContainer>
+    );
+  }
+
+  if (error) {
+    return (
+      <PageContainer>
+        <Typography>Error loading order.</Typography>
+      </PageContainer>
+    );
+  }
 
   if (!order) {
     return (
       <PageContainer>
-        <Typography>Loading order...</Typography>
+        <Typography>Order not found.</Typography>
       </PageContainer>
     );
   }
@@ -37,8 +62,8 @@ export default function SellerOrderDetailPage() {
             Items
           </Typography>
 
-          {order.items.map((item, idx) => (
-            <div key={idx}>
+          {order.items?.map((item, idx) => (
+            <div key={item._id || idx}>
               {item.product?.name} × {item.quantity}
             </div>
           ))}
