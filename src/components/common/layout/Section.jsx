@@ -2,7 +2,7 @@ import { Box, Typography, Stack } from "@mui/material";
 
 export function Section({ title, subtitle, action, children }) {
   return (
-    <Box sx={{ mb: 6 }}>
+    <div>
       {/* HEADER BLOCK */}
       <Stack
         direction="row"
@@ -37,6 +37,6 @@ export function Section({ title, subtitle, action, children }) {
       <Box sx={{ mt: 2 }}>
         {children}
       </Box>
-    </Box>
+    </div>
   );
 }

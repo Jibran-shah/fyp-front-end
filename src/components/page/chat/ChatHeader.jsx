@@ -1,30 +1,92 @@
-import { Box, Typography, Stack, Button } from "@mui/material";
+import { Box, Typography, Stack, IconButton, Avatar, Tooltip } from "@mui/material";
+import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 export default function ChatHeader({
   title = "Chat",
+  subtitle, // e.g. "online", "3 members", "last seen 2h ago"
+  avatar,
   onOpenMembers,
-  onOpenInfo
+  onOpenInfo,
 }) {
   return (
-    <Box sx={{ p: 2, borderBottom: "1px solid #eee" }}>
-      <Stack direction="row" justifyContent="space-between">
-        <Typography fontWeight={600}>
-          {title}
-        </Typography>
+    <Box
+      sx={{
+        px: 2,
+        py: 1.5,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
 
-        <Stack direction="row" spacing={1}>
-          {onOpenMembers && (
-            <Button size="small" onClick={onOpenMembers}>
-              Members
-            </Button>
-          )}
+        borderBottom: "1px solid",
+        borderColor: "divider",
 
-          {onOpenInfo && (
-            <Button size="small" onClick={onOpenInfo}>
-              Info
-            </Button>
+        bgcolor: "background.paper",
+        backdropFilter: "blur(10px)",
+
+        position: "sticky",
+        top: 0,
+        zIndex: 10,
+      }}
+    >
+      {/* Left side */}
+      <Stack direction="row" spacing={1.5} alignItems="center">
+        {avatar && <Avatar src={avatar} sx={{ width: 40, height: 40 }} />}
+
+        <Box>
+          <Typography
+            fontWeight={600}
+            sx={{
+              lineHeight: 1.2,
+              fontSize: "1rem",
+            }}
+          >
+            {title}
+          </Typography>
+
+          {subtitle && (
+            <Typography
+              variant="caption"
+              sx={{
+                color: "text.secondary",
+                display: "block",
+              }}
+            >
+              {subtitle}
+            </Typography>
           )}
-        </Stack>
+        </Box>
+      </Stack>
+
+      {/* Right actions */}
+      <Stack direction="row" spacing={0.5}>
+        {onOpenMembers && (
+          <Tooltip title="Members">
+            <IconButton
+              onClick={onOpenMembers}
+              size="small"
+              sx={{
+                bgcolor: "action.hover",
+              }}
+            >
+              <PeopleAltOutlinedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        )}
+
+        {onOpenInfo && (
+          <Tooltip title="Info">
+            <IconButton
+              onClick={onOpenInfo}
+              size="small"
+              sx={{
+                bgcolor: "action.hover",
+              }}
+            >
+              <InfoOutlinedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        )}
       </Stack>
     </Box>
   );

@@ -3,16 +3,26 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import PageContainer from "../../components/common/PageContainer";
 import { useBuyerOrder } from "../../../hooks/api/buyerOrders/buyerOrder.hooks";
+import { useCancelBuyerOrder } from "../../../hooks/api/buyerOrders/buyerOrder.hooks";
 
 export default function BuyerOrderDetailPage() {
   const navigate = useNavigate();
-  const { id } = useParams(); // 👈 get order id from URL
+  const { id } = useParams();
 
   const {
     data: order,
     isLoading,
     error,
   } = useBuyerOrder(id);
+
+  const {
+    mutateAsync: cancelOrder,
+    isPending: isCancelling,
+  } = useCancelBuyerOrder();
+
+  const handleCancel = async () => {
+    await cancelOrder(id);
+  };
 
   if (isLoading) {
     return (
@@ -40,36 +50,57 @@ export default function BuyerOrderDetailPage() {
 
   return (
     <PageContainer>
-      <Typography variant="h5">Order Details</Typography>
+      <Typography variant="h5">
+        Order Details
+      </Typography>
 
       <Stack spacing={2} mt={2}>
-        <Typography>Status: {order.status}</Typography>
-
-        <Typography>Total: {order.totalAmount}</Typography>
+        <Typography>
+          Status: {order.status}
+        </Typography>
 
         <Typography>
-          Payment: {order.paymentTransaction || "Pending"}
+          Total: {order.totalAmount}
+        </Typography>
+
+        <Typography>
+          Payment:{" "}
+          {order.paymentTransaction || "Pending"}
         </Typography>
 
         {/* ITEMS */}
         <Box>
-          <Typography variant="h6">Items</Typography>
+          <Typography variant="h6">
+            Items
+          </Typography>
 
           {order.items?.map((item, idx) => (
             <Box key={idx}>
-              {item.name} x {item.quantity}
+              {item.name} × {item.quantity}
             </Box>
           ))}
         </Box>
 
         {/* ACTION */}
         {order.status === "PENDING" && (
-          <Button color="error" variant="contained">
-            Cancel Order
+          <Button
+            color="error"
+            variant="contained"
+            disabled={isCancelling}
+            onClick={handleCancel}
+          >
+            {isCancelling
+              ? "Cancelling..."
+              : "Cancel Order"}
           </Button>
         )}
 
-        <Button variant="outlined" onClick={() => navigate("/orders/my")}>
+        <Button
+          variant="outlined"
+          onClick={() =>
+            navigate("/orders/my")
+          }
+        >
           Back
         </Button>
       </Stack>

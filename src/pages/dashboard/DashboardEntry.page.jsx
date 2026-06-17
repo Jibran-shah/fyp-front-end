@@ -9,28 +9,14 @@ import {
 } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useAvailableDashboards } from "../../hooks/ui/useAvailableDashboards";
 
 export default function DashboardEntryPage() {
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
 
-  // 🔥 TEMP MOCK (replace later with real profile logic)
-  const availableDashboards = [
-    {
-      key: "buyer",
-      label: "Buyer Dashboard",
-      route: "/buyer/dashboard",
-    },
-    {
-      key: "seller",
-      label: "Seller Dashboard",
-      route: "/seller/dashboard",
-    },
-    {
-      key: "provider",
-      label: "Service Provider Dashboard",
-      route: "/provider/dashboard",
-    },
-  ];
+  const availableDashboards = useAvailableDashboards(user);
 
   return (
     <Box
@@ -40,7 +26,11 @@ export default function DashboardEntryPage() {
         justifyContent: "center",
         alignItems: "center",
         p: 3,
-        background: `linear-gradient(135deg, ${theme.palette.background.default}, ${theme.palette.background.paper})`,
+        background: `linear-gradient(
+          135deg,
+          ${theme.palette.background.default},
+          ${theme.palette.background.paper}
+        )`,
       })}
     >
       <Paper
@@ -53,7 +43,6 @@ export default function DashboardEntryPage() {
           border: `1px solid ${theme.palette.divider}`,
         })}
       >
-        {/* HEADER */}
         <Typography variant="h5" fontWeight={800} mb={0.5}>
           Choose Your Workspace
         </Typography>
@@ -62,7 +51,6 @@ export default function DashboardEntryPage() {
           Select a dashboard to continue
         </Typography>
 
-        {/* DASHBOARDS */}
         <Stack spacing={2}>
           {availableDashboards.map((d) => (
             <Card
@@ -72,7 +60,6 @@ export default function DashboardEntryPage() {
                 border: `1px solid ${theme.palette.divider}`,
                 boxShadow: "none",
                 transition: "0.2s",
-
                 "&:hover": {
                   transform: "translateY(-3px)",
                   boxShadow: theme.shadows[6],
@@ -95,7 +82,6 @@ export default function DashboardEntryPage() {
           ))}
         </Stack>
 
-        {/* FOOTER */}
         <Box sx={{ mt: 3, textAlign: "center" }}>
           <Button variant="outlined" onClick={() => navigate("/")}>
             Back to Home

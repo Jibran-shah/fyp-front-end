@@ -12,6 +12,7 @@ import MarketplaceServiceCard from "../../components/common/marketplace/cards/Ma
 
 import { useServices } from "../../hooks/api/services/services.hooks";
 import { useGeoLocation } from "../../hooks/ui/useGeoLocation";
+import PageContainer from "../../components/common/layout/pageContainer/PageContainer";
 
 export default function ServicesPage() {
   const navigate = useNavigate();
@@ -71,83 +72,77 @@ export default function ServicesPage() {
   if (isError) return null;
 
   return (
-    <Box sx={{ backgroundColor: "background.default", minHeight: "100vh" }}>
-      <Container maxWidth="xl" sx={{ py: 4 }}>
-        <Stack spacing={6}>
+      <PageContainer>
+        {/* HERO */}
+        <HeroSection
+          title="Hire Skilled Professionals"
+          subtitle="Browse verified freelancers and agencies for your projects"
+          backgroundImage="https://images.unsplash.com/photo-1521737604893-d14cc237f11d"
+        >
 
-          {/* HERO */}
-          <HeroSection
-            title="Hire Skilled Professionals"
-            subtitle="Browse verified freelancers and agencies for your projects"
-            backgroundImage="https://images.unsplash.com/photo-1521737604893-d14cc237f11d"
+          {/* FILTERS */}
+          <MarketplaceFilters
+            filters={filters}
+            onChange={setFilters}
+            config={{
+              search: true,
+              searchPlaceholder: "Search services...",
+
+              sortOptions: [
+                { label: "Newest", value: "-createdAt" },
+                { label: "Oldest", value: "createdAt" },
+                { label: "Price ↑", value: "price" },
+                { label: "Price ↓", value: "-price" },
+                { label: "Rating", value: "-ratingAverage" }
+              ],
+
+              extraFilters: [
+                {
+                  key: "status",
+                  label: "Status",
+                  type: "select",
+                  options: [
+                    { label: "All", value: "" },
+                    { label: "Active", value: "active" },
+                    { label: "Inactive", value: "inactive" }
+                  ]
+                },
+
+                {
+                  key: "radius",
+                  label: "Radius (meters)",
+                  type: "slider",
+                  min: 1000,
+                  max: 100000,
+                  step: 1000
+                }
+              ]
+            }}
+          />
+
+          <Button
+            variant="contained"
+            onClick={handleGoToSearch}
+            sx={{ mt: 2 }}
           >
+            Search Services
+          </Button>
 
-            {/* FILTERS */}
-            <MarketplaceFilters
-              filters={filters}
-              onChange={setFilters}
-              config={{
-                search: true,
-                searchPlaceholder: "Search services...",
+        </HeroSection>
 
-                sortOptions: [
-                  { label: "Newest", value: "-createdAt" },
-                  { label: "Oldest", value: "createdAt" },
-                  { label: "Price ↑", value: "price" },
-                  { label: "Price ↓", value: "-price" },
-                  { label: "Rating", value: "-ratingAverage" }
-                ],
-
-                extraFilters: [
-                  {
-                    key: "status",
-                    label: "Status",
-                    type: "select",
-                    options: [
-                      { label: "All", value: "" },
-                      { label: "Active", value: "active" },
-                      { label: "Inactive", value: "inactive" }
-                    ]
-                  },
-
-                  {
-                    key: "radius",
-                    label: "Radius (meters)",
-                    type: "slider",
-                    min: 1000,
-                    max: 100000,
-                    step: 1000
-                  }
-                ]
-              }}
-            />
-
-            <Button
-              variant="contained"
-              onClick={handleGoToSearch}
-              sx={{ mt: 2 }}
-            >
-              Search Services
-            </Button>
-
-          </HeroSection>
-
-          {/* FEATURED SERVICES */}
-          <Section
-            title="Featured Services"
-            subtitle="Top rated professionals available for hire"
-          >
-            <MarketplaceGrid>
-              {services.map((service) => (
-                <MarketplaceGridItem key={service._id}>
-                  <MarketplaceServiceCard service={service} />
-                </MarketplaceGridItem>
-              ))}
-            </MarketplaceGrid>
-          </Section>
-
-        </Stack>
-      </Container>
-    </Box>
+        {/* FEATURED SERVICES */}
+        <Section
+          title="Featured Services"
+          subtitle="Top rated professionals available for hire"
+        >
+          <MarketplaceGrid>
+            {services.map((service) => (
+              <MarketplaceGridItem key={service._id}>
+                <MarketplaceServiceCard service={service} />
+              </MarketplaceGridItem>
+            ))}
+          </MarketplaceGrid>
+        </Section>
+    </PageContainer>
   );
 }

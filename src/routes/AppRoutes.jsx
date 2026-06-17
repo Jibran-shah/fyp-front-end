@@ -53,6 +53,9 @@ import CategoryCreatePage from "../pages/categories/CreateCategory.page";
 import ProductSearchPage from "../pages/products/ProductsSearchPage";
 import CreateServicePage from "../pages/services/CreateService.page";
 import ServicesSearchPage from "../pages/services/ServicesSearch.page";
+import ProductUpdatePage from "../pages/products/ProductUpdate.page";
+import EditServicePage from "../pages/services/EditService.page";
+import MapDemo from "../pages/MapDemo.page";
 
 
 export default function AppRoutes() {
@@ -71,6 +74,7 @@ export default function AppRoutes() {
 
       {/* ROUTES WITH LAYOUT */}
       <Route element={<Layout />}>
+        <Route path="/map" element={<MapDemo/>}/>
         <Route path="/" element={<HomePage />} />
 
         <Route path="/dashboard" element={<DashboardEntryPage />} />
@@ -83,12 +87,14 @@ export default function AppRoutes() {
 
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/products/create" element={<ProductCreatePage/>}/>
+        <Route path="/products/update/:id" element={<ProductUpdatePage/>}/>
         <Route path="/products/search" element={<ProductSearchPage/>}/>
         <Route path="/products/:id" element={<ProductDetailsPage />} />
         
         <Route path="/services" element={<ServicesPage />} />
         <Route path="/services/create" element={<CreateServicePage />} />
         <Route path="/services/search" element={<ServicesSearchPage/>}/>
+        <Route path="/services/update/:id" element={<EditServicePage/>}/>
         <Route path="/services/:id" element={<ServiceDetailsPage />} />
 
         <Route

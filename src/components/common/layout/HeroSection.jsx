@@ -27,6 +27,7 @@ export default function AppHero({
 
         backgroundSize: "cover",
         backgroundPosition: "center",
+        mb:"24px"
       }}
     >
       {/* BACKGROUND OVERLAY (non-interactive) */}

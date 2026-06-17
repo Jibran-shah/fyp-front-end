@@ -7,6 +7,7 @@ import { onSocketEvent, offSocketEvent } from "../socket.events";
 export const registerChatSocket = (handlers = {}) => {
   console.log("📝 [chat.socket] register");
   console.log("🧾 handlers:", handlers);
+  console.log("Handlers From:",handlers.from);
 
   Object.entries({
     [EVENTS.CHAT.MESSAGE_SEND]: handlers.onNewMessage,
@@ -19,7 +20,6 @@ export const registerChatSocket = (handlers = {}) => {
       console.warn(`⚠️ Missing handler for ${event}`);
       return;
     }
-
     console.log(`➕ Registering ${event}`);
     onSocketEvent(event, handler);
   });

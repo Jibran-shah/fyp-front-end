@@ -257,7 +257,6 @@ export const useGetChatMessagesInfinite = (chatId, params = {}) => {
 
       return meta.page + 1;
     },
-
     initialPageParam: 1,
   });
 };

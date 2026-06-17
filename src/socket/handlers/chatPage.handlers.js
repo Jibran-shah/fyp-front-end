@@ -2,98 +2,111 @@ import { queryClient } from "../../utils/queryCient";
 import { queryKeys } from "../../utils/queryKeys";
 
 export const handleNewMessage = (message) => {
-  console.log("📩 [handleNewMessage] Received message:", message);
+  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+  console.log("📩 NEW MESSAGE RECEIVED:", message);
 
   const chatId = message?.roomId || message?.chatId;
 
   if (!chatId) {
-    console.warn("⚠️ [handleNewMessage] Missing chatId:", message);
+    console.warn("⚠️ Missing chatId:", message);
     return;
   }
 
   const queryKey = queryKeys.messages.chat(chatId);
 
-  console.log("🔑 [handleNewMessage] Query key:", queryKey);
+  console.log("🔑 Computed Query Key:", JSON.stringify(queryKey));
 
-  queryClient.setQueryData(queryKey, (old) => {
-    console.log("📦 [handleNewMessage] Current cache:", old);
+  // 🔥 PROBE 1: ALL KEYS IN CACHE
+  const allQueries = queryClient.getQueryCache().getAll();
 
-    if (!old?.pages?.length) {
-      console.warn(
-        "⚠️ [handleNewMessage] No pages found in cache for chat:",
-        chatId
-      );
-      return old;
-    }
+  console.log("📦 ALL QUERY KEYS IN CACHE:");
+  allQueries.forEach((q, i) => {
+    console.log(`  ${i}:`, JSON.stringify(q.queryKey));
+  });
 
-    let inserted = false;
+  const targetQuery = allQueries.find(
+    (q) => JSON.stringify(q.queryKey) === JSON.stringify(queryKey)
+  );
 
-    const updatedPages = old.pages.map((page, pageIndex) => {
-      console.log(
-        `📄 [handleNewMessage] Processing page ${pageIndex} with ${
-          page.messages?.length || 0
-        } messages`
-      );
+  console.log("🎯 MATCH FOUND IN CACHE:", !!targetQuery);
 
-      const exists = page.messages?.some((m) => {
-        const duplicate =
-          m._id === message._id ||
-          (message.tempId && m.tempId === message.tempId);
-
-        if (duplicate) {
-          console.log(
-            "♻️ [handleNewMessage] Duplicate detected:",
-            {
-              existing: m,
-              incoming: message,
-            }
-          );
-        }
-
-        return duplicate;
-      });
-
-      if (exists) {
-        return page;
-      }
-
-      if (!inserted) {
-        inserted = true;
-
-        const newMessages = [...(page.messages || []), message];
-
-        console.log(
-          `✅ [handleNewMessage] Message inserted into page ${pageIndex}`
-        );
-        console.log(
-          "📑 [handleNewMessage] Message order after insert:"
-        );
-        console.table(
-          newMessages.map((m) => ({
-            id: m._id || m.tempId,
-            text: m.text,
-            createdAt: m.createdAt,
-          }))
-        );
-
+    queryClient.setQueryData(queryKey, (old) => {
+      console.log("━━━━━━━━ CACHE BEFORE UPDATE ━━━━━━━━");
+      console.log("OLD:", old);
+      if (!old) {
         return {
-          ...page,
-          messages: newMessages,
+          pages: [
+            {
+              messages: [message],
+            },
+          ],
+          pageParams: [],
         };
       }
 
-      return page;
+      // Check for duplicates across ALL pages
+      const exists = old.pages.some((page, pageIndex) =>
+        (page.messages || []).some((m, msgIndex) => {
+          const sameId = m._id === message._id;
+          const sameTempId =
+            message.tempId && m.tempId === message.tempId;
+
+          if (sameId || sameTempId) {
+            console.log("♻️ DUPLICATE FOUND");
+            console.log("Page:", pageIndex);
+            console.log("Message index:", msgIndex);
+            console.log("Incoming:", message);
+            console.log("Existing:", m);
+          }
+
+          return sameId || sameTempId;
+        })
+      );
+
+      if (exists) {
+        console.log("⚠️ Message already exists in cache");
+        return old;
+      }
+
+      const pages = [...old.pages];
+
+      // Since pages are ordered oldest -> newest,
+      // insert into LAST page
+      const lastPageIndex = pages.length - 1;
+
+      const lastPage = pages[lastPageIndex];
+
+      pages[lastPageIndex] = {
+        ...lastPage,
+        messages: [...(lastPage.messages || []), message],
+      };
+
+      console.log("✅ Inserted into page:", lastPageIndex);
+      console.log(
+        "New message count:",
+        pages[lastPageIndex].messages.length
+      );
+
+      return {
+        ...old,
+        pages,
+      };
     });
+  // 🔥 PROBE 2: VERIFY AFTER UPDATE
+  setTimeout(() => {
+    const final = queryClient.getQueryData(queryKey);
 
-    const updated = {
-      ...old,
-      pages: updatedPages,
-    };
+    console.log("━━━━━━━━ POST-UPDATE CHECK ━━━━━━━━");
+    console.log("FINAL CACHE FROM REACT QUERY:", final);
 
-    console.log("💾 [handleNewMessage] Cache updated");
+    const totalMessages =
+      final?.pages?.reduce(
+        (acc, p) => acc + (p.messages?.length || 0),
+        0
+      ) || 0;
 
-    return updated;
-  });
+    console.log("📊 TOTAL MESSAGES NOW:", totalMessages);
+  }, 50);
 };
 
 

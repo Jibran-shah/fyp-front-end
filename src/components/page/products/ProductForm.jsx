@@ -1,37 +1,61 @@
-import { Paper, Stack, Button, Typography } from "@mui/material";
+import { Paper, Stack, Button } from "@mui/material";
 import { Controller } from "react-hook-form";
 
 import { InputField } from "../../common/InputField";
 import CategoryTreeSelect from "../categories/CategoryTreeSelect";
 import FileInputField from "../../common/FileInputField";
+import FileListManager from "../../common/FileListManager";
 
 export default function ProductForm({
-  mode = "create",
   onSubmit,
   register,
   control,
-  loading = false
+  loading = false,
+  mode = "create",
 }) {
   return (
     <Paper
       component="form"
       onSubmit={onSubmit}
-      sx={{ p: 4, width: "100%", maxWidth: 700 }}
+      elevation={0}
+      sx={{
+        p: 0,
+        width: "100%",
+      }}
     >
-      <Typography variant="h5" fontWeight={600} mb={3}>
-        {mode === "create" ? "Create Product" : "Edit Product"}
-      </Typography>
-
       <Stack spacing={2}>
+        {/* ===================== */}
+        {/* BASIC INPUTS */}
+        {/* ===================== */}
+        <InputField
+          label="Product Name"
+          name="name"
+          register={register}
+        />
 
-        {/* NORMAL INPUTS */}
-      <InputField label="Product Name" name="name" register={register} />
-      <InputField label="Description" name="description" register={register} />
-      <InputField label="Price" type="number" name="price" register={register} />
-      <InputField label="Quantity Available" type="number" name="quantityAvailable" register={register} />
-      <InputField label="Full Address" name="fullAddress" register={register} />
+        <InputField
+          label="Description"
+          name="description"
+          register={register}
+        />
 
+        <InputField
+          label="Price"
+          type="number"
+          name="price"
+          register={register}
+        />
+
+        <InputField
+          label="Quantity Available"
+          type="number"
+          name="quantityAvailable"
+          register={register}
+        />
+
+        {/* ===================== */}
         {/* CATEGORY */}
+        {/* ===================== */}
         <Controller
           name="category"
           control={control}
@@ -44,13 +68,39 @@ export default function ProductForm({
           )}
         />
 
-        {/* IMAGES */}
+        {/* ===================== */}
+        {/* EXISTING IMAGES */}
+        {/* Only for edit mode */}
+        {/* ===================== */}
+        {mode === "edit" && (
+          <Controller
+            name="oldImages"
+            control={control}
+            defaultValue={[]}
+            render={({ field }) => (
+              <FileListManager
+                label="Existing Images"
+                value={field.value || []}
+                onChange={field.onChange}
+              />
+            )}
+          />
+        )}
+
+        {/* ===================== */}
+        {/* NEW IMAGES */}
+        {/* ===================== */}
         <Controller
           name="images"
           control={control}
+          defaultValue={[]}
           render={({ field }) => (
             <FileInputField
-              label="Product Images"
+              label={
+                mode === "edit"
+                  ? "Upload New Images"
+                  : "Product Images"
+              }
               multiple
               maxFiles={10}
               maxSizeMB={10}
@@ -61,10 +111,21 @@ export default function ProductForm({
           )}
         />
 
-        <Button type="submit" variant="contained" disabled={loading}>
-          {loading ? "Processing..." : mode === "create" ? "Create Product" : "Update Product"}
+        {/* ===================== */}
+        {/* SUBMIT */}
+        {/* ===================== */}
+        <Button
+          type="submit"
+          variant="contained"
+          disabled={loading}
+          size="large"
+        >
+          {loading
+            ? "Processing..."
+            : mode === "create"
+            ? "Create Product"
+            : "Update Product"}
         </Button>
-
       </Stack>
     </Paper>
   );

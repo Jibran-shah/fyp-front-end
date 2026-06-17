@@ -3,33 +3,108 @@ import {
   Paper,
   Typography,
   Button,
-  Stack
+  Stack,
+  CircularProgress,
 } from "@mui/material";
 
+import { useParams, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+
 import {InputField} from "../../components/common/InputField";
+import CategoryTreeSelect from "../../components/page/categories/CategoryTreeSelect";
+
+import {
+  useService,
+  useUpdateService,
+} from "../../hooks/api/services/services.hooks";
+import { useServiceForm } from "../../hooks/form/services/useService.form";
 
 export default function EditServicePage() {
-  return (
-    <Box
-      sx={{
-        p: 4,
-        display: "flex",
-        justifyContent: "center"
-      }}
-    >
-      <Paper
-        component="form"
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const { data, isLoading, isError } = useService(id);
+  const { mutate: updateService, isPending } = useUpdateService();
+
+  const form = useServiceForm();
+
+  const { register, handleSubmit, reset, control, formState } = form;
+
+  /* =========================
+     FILL FORM ON LOAD
+  ========================= */
+  useEffect(() => {
+    if (!data) return;
+
+    reset({
+      name: data.name || "",
+      description: data.description || "",
+      category: data.category?._id || data.category || "",
+      price: data.price || 0,
+      durationHours: data.durationHours || 0,
+    });
+  }, [data, reset]);
+
+  /* =========================
+     DIRTY CHECK
+  ========================= */
+  const isChangeMade = formState.isDirty;
+
+  /* =========================
+     SUBMIT
+  ========================= */
+  const onSubmit = handleSubmit((values) => {
+    updateService(
+      {
+        id,
+        data: values,
+      },
+      {
+        onSuccess: (res) => {
+          const serviceId = res?._id || res?.id || id;
+          navigate(`/services/${serviceId}`);
+        },
+      }
+    );
+  });
+
+  /* =========================
+     LOADING STATE
+  ========================= */
+  if (isLoading) {
+    return (
+      <Box
         sx={{
-          p: 4,
-          width: "100%",
-          maxWidth: 700
+          minHeight: "50vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        <Typography
-          variant="h5"
-          fontWeight={600}
-          mb={3}
-        >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (isError || !data) {
+    return (
+      <Box sx={{ p: 4 }}>
+        <Typography color="error">
+          Failed to load service
+        </Typography>
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={{ p: 4, display: "flex", justifyContent: "center" }}>
+      <Paper
+        component="form"
+        onSubmit={onSubmit}
+        sx={{ p: 4, width: "100%", maxWidth: 700 }}
+      >
+        <Typography variant="h5" fontWeight={600} mb={3}>
           Edit Service
         </Typography>
 
@@ -37,50 +112,49 @@ export default function EditServicePage() {
           <InputField
             label="Service Name"
             name="name"
+            register={register}
           />
 
           <InputField
             label="Description"
             name="description"
+            register={register}
           />
 
-          <InputField
-            label="Category"
+          {/* =========================
+              CATEGORY (FIXED)
+          ========================= */}
+          <Controller
             name="category"
+            control={control}
+            render={({ field }) => (
+              <CategoryTreeSelect
+                value={field.value}
+                onChange={field.onChange}
+              />
+            )}
           />
 
           <InputField
             label="Price"
             name="price"
             type="number"
+            register={register}
           />
 
           <InputField
             label="Duration Hours"
             name="durationHours"
             type="number"
-          />
-
-          <InputField
-            label="Address"
-            name="fullAddress"
-          />
-
-          <InputField
-            label="Latitude"
-            name="latitude"
-          />
-
-          <InputField
-            label="Longitude"
-            name="longitude"
+            register={register}
           />
 
           <Button
             variant="contained"
             type="submit"
+            disabled={isPending || !isChangeMade}
           >
-            Update Service
+            {isPending ? "Updating..." : "Update Service"}
           </Button>
         </Stack>
       </Paper>

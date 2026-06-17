@@ -7,15 +7,17 @@ import {
   Paper,
   Button,
   InputAdornment,
+  IconButton,
 } from "@mui/material";
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CategoryIcon from "@mui/icons-material/Category";
+import CloseIcon from "@mui/icons-material/Close";
 
 import { useCategoryTree } from "../../../hooks/api/categories/categories.hooks";
 
 /* =========================
-   TREE NODE (UNCHANGED LOGIC)
+   TREE NODE
 ========================= */
 function TreeNode({ node, level, value, onSelect }) {
   const hasChildren = node.children?.length > 0;
@@ -53,19 +55,22 @@ function TreeNode({ node, level, value, onSelect }) {
 }
 
 /* =========================
-   MAIN COMPONENT (COMPACT INPUT STYLE)
+   MAIN COMPONENT
 ========================= */
 export default function CategoryTreeSelect({
   value,
   onChange,
   label = "Category",
+  disabled = false,
 }) {
   const { data: tree, isLoading, isError } = useCategoryTree();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
-  // label resolution
+  /* =========================
+     FIND LABEL FROM ID
+  ========================= */
   const selectedLabel = useMemo(() => {
     if (!tree || !value) return "";
 
@@ -80,16 +85,24 @@ export default function CategoryTreeSelect({
     return "";
   }, [tree, value]);
 
+  /* =========================
+     SELECT HANDLER
+  ========================= */
   const handleSelect = (id) => {
     onChange?.(id);
     setAnchorEl(null);
   };
 
+  const handleClear = (e) => {
+    e.stopPropagation();
+    onChange?.("");
+  };
+
   return (
     <>
-      {/* INPUT LOOK */}
+      {/* INPUT */}
       <Paper
-        onClick={(e) => setAnchorEl(e.currentTarget)}
+        onClick={(e) => !disabled && setAnchorEl(e.currentTarget)}
         elevation={0}
         sx={{
           display: "flex",
@@ -99,10 +112,11 @@ export default function CategoryTreeSelect({
           border: "1px solid",
           borderColor: "divider",
           borderRadius: 1.5,
-          cursor: "pointer",
+          cursor: disabled ? "not-allowed" : "pointer",
+          opacity: disabled ? 0.6 : 1,
           transition: "all 0.15s ease",
           "&:hover": {
-            borderColor: "primary.main",
+            borderColor: disabled ? "divider" : "primary.main",
           },
         }}
       >
@@ -110,10 +124,15 @@ export default function CategoryTreeSelect({
           <CategoryIcon fontSize="small" />
         </InputAdornment>
 
+        {/* TEXT */}
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Typography
             variant="caption"
-            sx={{ display: "block", color: "text.secondary", lineHeight: 1 }}
+            sx={{
+              display: "block",
+              color: "text.secondary",
+              lineHeight: 1,
+            }}
           >
             {label}
           </Typography>
@@ -131,10 +150,17 @@ export default function CategoryTreeSelect({
           </Typography>
         </Box>
 
+        {/* CLEAR BUTTON */}
+        {value && !disabled && (
+          <IconButton size="small" onClick={handleClear}>
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        )}
+
         <ArrowDropDownIcon fontSize="small" />
       </Paper>
 
-      {/* POPUP */}
+      {/* POPOVER */}
       <Popover
         open={open}
         anchorEl={anchorEl}

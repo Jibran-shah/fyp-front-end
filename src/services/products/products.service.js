@@ -95,11 +95,14 @@ export const updateProduct = async ({ id, data }) => {
   console.log("[updateProduct] Payload:", data);
 
   try {
-    const res = await apiClient.patch(`/products/${id}`, data);
+    const res = await apiClient.patch(`/products/${id}`, data,{
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
 
     console.log("[updateProduct] Response:", res.data);
-
-    return res.data.data;
+    return res.data;
   } catch (error) {
     console.error("[updateProduct] Error:", error);
     throw error;

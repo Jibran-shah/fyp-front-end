@@ -10,7 +10,6 @@ export const useServiceForm = (
       price: 0,
       durationHours: 0,
       category: "",
-      fullAddress: "",
       ...defaultValues
     }
   });

@@ -13,6 +13,7 @@ import MarketplaceProductCard from "../../components/common/marketplace/cards/Ma
 
 import { useGetProducts } from "../../hooks/api/products/products.hooks";
 import { useMarketplaceProductActions } from "../../hooks/ui/marketplace/useMarketplaceProductActions";
+import PageContainer from "../../components/common/layout/pageContainer/PageContainer";
 
 export default function ProductSearchPage() {
   const navigate = useNavigate();
@@ -67,77 +68,67 @@ export default function ProductSearchPage() {
   }
 
   return (
-    <Box
-      sx={{
-        backgroundColor: "background.default",
-        minHeight: "100vh",
-        py: 4,
-      }}
-    >
-      <Container maxWidth="xl">
-        <Stack spacing={4}>
-          <Stack spacing={1}>
-            <Typography variant="h4" fontWeight={700}>
-              Search Results
-            </Typography>
+      <PageContainer>
+        <Stack spacing={1}>
+          <Typography variant="h4" fontWeight={700}>
+            Search Results
+          </Typography>
 
-            <Typography
-              variant="body2"
-              color="text.secondary"
-            >
-              {products.length} products found
-            </Typography>
-          </Stack>
-
-          <MarketplaceGrid>
-            {products.map((product) => (
-              <MarketplaceGridItem key={product._id}>
-                <MarketplaceProductCard
-                  product={product}
-                  onCardClick={handleCardClick}
-                  onAddToCart={handleAddToCart}
-                />
-              </MarketplaceGridItem>
-            ))}
-          </MarketplaceGrid>
-
-          {products.length === 0 && (
-            <Typography
-              textAlign="center"
-              color="text.secondary"
-            >
-              No products found.
-            </Typography>
-          )}
-
-          <Stack
-            direction="row"
-            spacing={2}
-            justifyContent="center"
-            alignItems="center"
+          <Typography
+            variant="body2"
+            color="text.secondary"
           >
-            <Button
-              variant="outlined"
-              disabled={currentPage <= 1}
-              onClick={() => updatePage(currentPage - 1)}
-            >
-              Previous
-            </Button>
-
-            <Typography fontWeight={600}>
-              Page {currentPage} of {totalPages}
-            </Typography>
-
-            <Button
-              variant="outlined"
-              disabled={currentPage >= totalPages}
-              onClick={() => updatePage(currentPage + 1)}
-            >
-              Next
-            </Button>
-          </Stack>
+            {products.length} products found
+          </Typography>
         </Stack>
-      </Container>
-    </Box>
+
+        <MarketplaceGrid>
+          {products.map((product) => (
+            <MarketplaceGridItem key={product._id}>
+              <MarketplaceProductCard
+                product={product}
+                onCardClick={handleCardClick}
+                onAddToCart={handleAddToCart}
+              />
+            </MarketplaceGridItem>
+          ))}
+        </MarketplaceGrid>
+
+        {products.length === 0 && (
+          <Typography
+            textAlign="center"
+            color="text.secondary"
+          >
+            No products found.
+          </Typography>
+        )}
+
+        <Stack
+          direction="row"
+          spacing={2}
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Button
+            variant="outlined"
+            disabled={currentPage <= 1}
+            onClick={() => updatePage(currentPage - 1)}
+          >
+            Previous
+          </Button>
+
+          <Typography fontWeight={600}>
+            Page {currentPage} of {totalPages}
+          </Typography>
+
+          <Button
+            variant="outlined"
+            disabled={currentPage >= totalPages}
+            onClick={() => updatePage(currentPage + 1)}
+          >
+            Next
+          </Button>
+        </Stack>
+    </PageContainer>
   );
 }

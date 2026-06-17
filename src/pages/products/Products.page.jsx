@@ -12,6 +12,7 @@ import MarketplaceProductCard from "../../components/common/marketplace/cards/Ma
 
 import { useMarketplaceProductActions } from "../../hooks/ui/marketplace/useMarketplaceProductActions";
 import { useGetProducts } from "../../hooks/api/products/products.hooks";
+import PageContainer from "../../components/common/layout/pageContainer/PageContainer";
 
 export default function ProductsPage() {
   const navigate = useNavigate();
@@ -77,105 +78,99 @@ export default function ProductsPage() {
   if (isError) return null;
 
   return (
-    <Box sx={{ bgcolor: "background.default", minHeight: "100vh" }}>
-      <Container maxWidth="xl" sx={{ py: 4 }}>
-        <Stack spacing={6}>
+    <PageContainer>
+        {/* HERO */}
+        <HeroSection
+          title="Discover Products"
+          subtitle="Find electronics, fashion, and everything you need in one place."
+          backgroundImage="https://images.unsplash.com/photo-1523275335684-37898b6baf30"
+        >
 
-          {/* HERO */}
-          <HeroSection
-            title="Discover Products"
-            subtitle="Find electronics, fashion, and everything you need in one place."
-            backgroundImage="https://images.unsplash.com/photo-1523275335684-37898b6baf30"
+          {/* ✅ YOUR NEW GENERIC FILTER BAR */}
+          <FilterBar
+            filters={filters}
+            onChange={setFilters}
+            config={{
+              search: true,
+              searchPlaceholder: "Search products...",
+
+              sortOptions: [
+                { label: "Newest", value: "-createdAt" },
+                { label: "Oldest", value: "createdAt" },
+                { label: "Price ↑", value: "price" },
+                { label: "Price ↓", value: "-price" },
+                { label: "Rating", value: "-ratingAverage" },
+              ],
+
+              extraFilters: [
+                {
+                  key: "inStock",
+                  label: "Stock",
+                  type: "select",
+                  options: [
+                    { label: "All", value: "" },
+                    { label: "In Stock", value: true },
+                    { label: "Out of Stock", value: false },
+                  ],
+                },
+              ],
+            }}
+          />
+
+          <Button
+            variant="contained"
+            onClick={handleGoToSearch}
+            sx={{ mt: 2 }}
           >
+            Search Products
+          </Button>
 
-            {/* ✅ YOUR NEW GENERIC FILTER BAR */}
-            <FilterBar
-              filters={filters}
-              onChange={setFilters}
-              config={{
-                search: true,
-                searchPlaceholder: "Search products...",
+        </HeroSection>
 
-                sortOptions: [
-                  { label: "Newest", value: "-createdAt" },
-                  { label: "Oldest", value: "createdAt" },
-                  { label: "Price ↑", value: "price" },
-                  { label: "Price ↓", value: "-price" },
-                  { label: "Rating", value: "-ratingAverage" },
-                ],
+        {/* ELECTRONICS */}
+        <Section title="Electronics" subtitle="Phones, laptops and gadgets">
+          <MarketplaceGrid>
+            {electronics.map((product) => (
+              <MarketplaceGridItem key={product._id}>
+                <MarketplaceProductCard
+                  product={product}
+                  onCardClick={handleCardClick}
+                  onAddToCart={handleAddToCart}
+                />
+              </MarketplaceGridItem>
+            ))}
+          </MarketplaceGrid>
+        </Section>
 
-                extraFilters: [
-                  {
-                    key: "inStock",
-                    label: "Stock",
-                    type: "select",
-                    options: [
-                      { label: "All", value: "" },
-                      { label: "In Stock", value: true },
-                      { label: "Out of Stock", value: false },
-                    ],
-                  },
-                ],
-              }}
-            />
+        {/* FASHION */}
+        <Section title="Fashion" subtitle="Trending clothing and accessories">
+          <MarketplaceGrid>
+            {fashion.map((product) => (
+              <MarketplaceGridItem key={product._id}>
+                <MarketplaceProductCard
+                  product={product}
+                  onCardClick={handleCardClick}
+                  onAddToCart={handleAddToCart}
+                />
+              </MarketplaceGridItem>
+            ))}
+          </MarketplaceGrid>
+        </Section>
 
-            <Button
-              variant="contained"
-              onClick={handleGoToSearch}
-              sx={{ mt: 2 }}
-            >
-              Search Products
-            </Button>
-
-          </HeroSection>
-
-          {/* ELECTRONICS */}
-          <Section title="Electronics" subtitle="Phones, laptops and gadgets">
-            <MarketplaceGrid>
-              {electronics.map((product) => (
-                <MarketplaceGridItem key={product._id}>
-                  <MarketplaceProductCard
-                    product={product}
-                    onCardClick={handleCardClick}
-                    onAddToCart={handleAddToCart}
-                  />
-                </MarketplaceGridItem>
-              ))}
-            </MarketplaceGrid>
-          </Section>
-
-          {/* FASHION */}
-          <Section title="Fashion" subtitle="Trending clothing and accessories">
-            <MarketplaceGrid>
-              {fashion.map((product) => (
-                <MarketplaceGridItem key={product._id}>
-                  <MarketplaceProductCard
-                    product={product}
-                    onCardClick={handleCardClick}
-                    onAddToCart={handleAddToCart}
-                  />
-                </MarketplaceGridItem>
-              ))}
-            </MarketplaceGrid>
-          </Section>
-
-          {/* HOME */}
-          <Section title="Home & Living" subtitle="Furniture and home essentials">
-            <MarketplaceGrid>
-              {homeLiving.map((product) => (
-                <MarketplaceGridItem key={product._id}>
-                  <MarketplaceProductCard
-                    product={product}
-                    onCardClick={handleCardClick}
-                    onAddToCart={handleAddToCart}
-                  />
-                </MarketplaceGridItem>
-              ))}
-            </MarketplaceGrid>
-          </Section>
-
-        </Stack>
-      </Container>
-    </Box>
+        {/* HOME */}
+        <Section title="Home & Living" subtitle="Furniture and home essentials">
+          <MarketplaceGrid>
+            {homeLiving.map((product) => (
+              <MarketplaceGridItem key={product._id}>
+                <MarketplaceProductCard
+                  product={product}
+                  onCardClick={handleCardClick}
+                  onAddToCart={handleAddToCart}
+                />
+              </MarketplaceGridItem>
+            ))}
+          </MarketplaceGrid>
+        </Section>
+    </PageContainer>
   );
 }

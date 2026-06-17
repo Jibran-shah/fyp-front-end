@@ -1,14 +1,21 @@
 import { useRef, useState } from "react";
-import { Box, Button, Typography, Stack } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  Stack,
+  Chip,
+  Paper,
+} from "@mui/material";
 
 export default function FileInputField({
   label = "Upload File",
   value,
   onChange,
   multiple = false,
-  maxFiles = 1,
+  maxFiles = 10,
   maxSizeMB = 5,
-  accept = "*/*"
+  accept = "*/*",
 }) {
   const [error, setError] = useState("");
   const inputRef = useRef(null);
@@ -21,15 +28,10 @@ export default function FileInputField({
   const validateFiles = (files) => {
     setError("");
 
-    const fileArray = Array.from(files);
+    const fileArray = Array.from(files || []).filter(Boolean);
 
     if (multiple && fileArray.length > maxFiles) {
       setError(`You can only upload up to ${maxFiles} files`);
-      return null;
-    }
-
-    if (!multiple && fileArray.length > 1) {
-      setError("Only one file is allowed");
       return null;
     }
 
@@ -42,61 +44,67 @@ export default function FileInputField({
       return null;
     }
 
-    return multiple ? fileArray : fileArray[0];
+    return fileArray;
   };
 
   // =========================
-  // CHANGE HANDLER
+  // CHANGE HANDLER (RHF SAFE)
   // =========================
   const handleChange = (e) => {
     const files = e.target.files;
-
-    if (!files || files.length === 0) return;
+    if (!files?.length) return;
 
     const validated = validateFiles(files);
-
     if (!validated) return;
 
-    console.log("[FileInputField] selected:", validated);
+    if (multiple) {
+      const prev = Array.isArray(value) ? value.filter(Boolean) : [];
 
-    // IMPORTANT: RHF-compatible contract
-    onChange?.(validated);
+      const merged = [...prev, ...validated].filter((f) => f?.name);
 
+      onChange?.(merged);
+    } else {
+      onChange?.(validated[0] || null);
+    }
+
+    // reset so same file can be selected again
     e.target.value = null;
   };
 
   // =========================
-  // NORMALIZE VALUE (RHF SAFE)
+  // SAFE NORMALIZATION
   // =========================
   const normalizedValue = multiple
     ? Array.isArray(value)
-      ? value
-      : value
-      ? [value]
+      ? value.filter((f) => f?.name)
       : []
-    : value;
+    : value && value?.name
+    ? value
+    : null;
 
   const hasValue = multiple
     ? normalizedValue.length > 0
-    : !!normalizedValue;
+    : !!normalizedValue?.name;
 
-  const getFileNames = () => {
-    if (!normalizedValue) return "";
+  // =========================
+  // REMOVE FILE (MULTIPLE)
+  // =========================
+  const handleRemove = (index) => {
+    if (!multiple) return;
 
-    if (multiple) {
-      return normalizedValue.map((f) => f?.name).filter(Boolean).join(", ");
-    }
+    const updated = normalizedValue.filter((_, i) => i !== index);
 
-    return normalizedValue?.name || "";
+    onChange?.(updated.length ? updated : []);
   };
 
   return (
     <Box>
-      <Typography variant="subtitle2" mb={1}>
+      <Typography variant="subtitle2" mb={1} fontWeight={600}>
         {label}
       </Typography>
 
-      <Stack spacing={1}>
+      <Stack spacing={1.2}>
+        {/* INPUT */}
         <input
           ref={inputRef}
           type="file"
@@ -107,9 +115,20 @@ export default function FileInputField({
           id={inputId}
         />
 
+        {/* BUTTON */}
         <label htmlFor={inputId}>
-          <Button variant="outlined" component="span">
-            Choose File{multiple ? "s" : ""}
+          <Button
+            variant="contained"
+            component="span"
+            sx={{
+              textTransform: "none",
+              borderRadius: 2,
+              px: 2.5,
+              boxShadow: "none",
+              "&:hover": { boxShadow: "none" },
+            }}
+          >
+            {multiple ? "Upload Files" : "Upload File"}
           </Button>
         </label>
 
@@ -120,11 +139,46 @@ export default function FileInputField({
           </Typography>
         )}
 
-        {/* SELECTED FILES */}
-        {hasValue && (
-          <Typography fontSize={12}>
-            Selected: {getFileNames()}
-          </Typography>
+        {/* MULTIPLE FILE PREVIEW */}
+        {multiple && hasValue && (
+          <Paper
+            variant="outlined"
+            sx={{
+              p: 1,
+              borderRadius: 2,
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 1,
+              bgcolor: "grey.50",
+            }}
+          >
+            {normalizedValue.map((file, idx) =>
+              file?.name ? (
+                <Chip
+                  key={`${file.name}-${idx}`}
+                  label={file.name}
+                  size="small"
+                  onDelete={() => handleRemove(idx)}
+                />
+              ) : null
+            )}
+          </Paper>
+        )}
+
+        {/* SINGLE FILE PREVIEW */}
+        {!multiple && hasValue && normalizedValue?.name && (
+          <Paper
+            variant="outlined"
+            sx={{
+              p: 1,
+              borderRadius: 2,
+              bgcolor: "grey.50",
+            }}
+          >
+            <Typography fontSize={13}>
+              📄 {normalizedValue.name}
+            </Typography>
+          </Paper>
         )}
       </Stack>
     </Box>

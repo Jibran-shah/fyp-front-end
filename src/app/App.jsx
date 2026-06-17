@@ -14,6 +14,10 @@ import {
   handleAppNewMessage,
 } from "../socket/handlers/chatApp.handlers";
 
+import { subscribePush } from "../utils/subscribePush";
+
+subscribePush()
+
 export default function App() {
   useAuthInit();
 

@@ -1,5 +1,7 @@
+import { toast } from "react-toastify";
 import { EVENTS } from "../../../backend/realtime/constants/events.constants";
 import { socket } from "./socket.client";
+import { citeToast } from "../utils/citeToast";
 
 const listeners = {
   [EVENTS.CHAT.MESSAGE_SEND]: new Set(),
@@ -14,6 +16,15 @@ const listeners = {
 INCOMING SOCKET EVENTS (RAW -> DISPATCHER)
 =====================================================
 */
+
+socket.on("notification",(data)=>{
+  citeToast({
+    type: data.type,
+    title: data.title,
+    message: data.message,
+  });
+})
+
 
 socket.on(EVENTS.CHAT.MESSAGE_SEND, (data) => {
   console.log("📩 [SOCKET] MESSAGE_SEND received:", data);

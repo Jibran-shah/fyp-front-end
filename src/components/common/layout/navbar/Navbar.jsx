@@ -47,7 +47,7 @@ export default function Navbar() {
         backdropFilter: "blur(8px)",
       })}
     >
-      <Toolbar sx={{ display: "flex", alignItems: "center" }}>
+      <Toolbar sx={{ display: "flex", alignItems: "center" }} sx={{px:"0px",py:"0px"}}>
         {/* LEFT */}
         {console.log("[Navbar] render Brand")}
         <Brand onClick={() => {

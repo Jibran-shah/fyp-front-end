@@ -11,7 +11,6 @@ export const checkout = async (data) => {
 
     console.log("[checkout] response:", res);
     console.log("[checkout] data:", res?.data);
-
     return res;
   } catch (error) {
     console.error("[checkout] error:", error);

@@ -4,6 +4,13 @@ import { useParams } from "react-router-dom";
 import PageContainer from "../../components/common/PageContainer";
 import { useSellerOrder } from "../../../hooks/api/sellerOrders/sellerOrder.hooks";
 
+import {
+  useMarkAsProcessing,
+  useMarkAsShipped,
+  useMarkAsDelivered,
+  useCancelSellerOrder,
+} from "../../../hooks/api/sellerOrders/sellerOrder.hooks";
+
 export default function SellerOrderDetailPage() {
   const { id } = useParams();
 
@@ -12,6 +19,18 @@ export default function SellerOrderDetailPage() {
     isLoading,
     error,
   } = useSellerOrder(id);
+
+  const { mutateAsync: markProcessing, isPending: isProcessing } =
+    useMarkAsProcessing();
+
+  const { mutateAsync: markShipped, isPending: isShipped } =
+    useMarkAsShipped();
+
+  const { mutateAsync: markDelivered, isPending: isDelivered } =
+    useMarkAsDelivered();
+
+  const { mutateAsync: cancelOrder, isPending: isCanceling } =
+    useCancelSellerOrder();
 
   if (isLoading) {
     return (
@@ -36,6 +55,9 @@ export default function SellerOrderDetailPage() {
       </PageContainer>
     );
   }
+
+  const loading =
+    isProcessing || isShipped || isDelivered || isCanceling;
 
   return (
     <PageContainer>
@@ -70,20 +92,49 @@ export default function SellerOrderDetailPage() {
         </div>
 
         {/* ACTIONS */}
-        <Stack direction="row" spacing={1} flexWrap="wrap">
-          <Button variant="outlined">
+        <Stack
+          direction="row"
+          spacing={1}
+          flexWrap="wrap"
+        >
+          <Button
+            variant="outlined"
+            disabled={loading}
+            onClick={() =>
+              markProcessing(order._id)
+            }
+          >
             Process
           </Button>
 
-          <Button variant="outlined">
+          <Button
+            variant="outlined"
+            disabled={loading}
+            onClick={() =>
+              markShipped(order._id)
+            }
+          >
             Ship
           </Button>
 
-          <Button variant="contained">
+          <Button
+            variant="contained"
+            disabled={loading}
+            onClick={() =>
+              markDelivered(order._id)
+            }
+          >
             Deliver
           </Button>
 
-          <Button color="error" variant="outlined">
+          <Button
+            color="error"
+            variant="outlined"
+            disabled={loading}
+            onClick={() =>
+              cancelOrder(order._id)
+            }
+          >
             Cancel
           </Button>
         </Stack>

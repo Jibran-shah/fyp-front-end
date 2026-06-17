@@ -51,7 +51,7 @@ export const socketEmit = (event, payload, ack) => {
     console.warn(`[socketEmit] Socket disconnected: ${event}`);
     return false;
   }
-
+  
   console.log(`[socketEmit] ${event}`, payload);
 
   if (typeof ack === "function") {

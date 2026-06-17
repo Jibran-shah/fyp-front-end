@@ -6,26 +6,29 @@ export const sendMessage = ({
   roomId,
   content,
   tempId,
-  userId, // 👈 ADD THIS
+  senderId, // 👈 ADD THIS
   type = "text",
   attachments = [],
+  receiverId
 }) => {
   console.log("[chat.socket] sendMessage:", {
     roomId,
     content,
     tempId,
-    userId,
+    senderId,
     type,
     attachments,
+    receiverId
   });
 
   socketEmit(EVENTS.CHAT.MESSAGE_SEND, {
     roomId,
     content,
     tempId,
-    senderId: userId, // 👈 ALSO SEND TO BACKEND
+    senderId, // 👈 ALSO SEND TO BACKEND
     type,
     attachments,
+    receiverId
   });
 };
 
