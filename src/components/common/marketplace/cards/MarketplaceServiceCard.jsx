@@ -16,12 +16,12 @@ export default function MarketplaceServiceCard({ service }) {
   };
 
   const handleBook = (e) => {
-    e.stopPropagation(); // 👈 prevents card navigation
+    e.stopPropagation();
     navigate(`/booking/create/${service._id}`);
   };
 
   const handleProviderClick = (e) => {
-    e.stopPropagation(); // optional but recommended
+    e.stopPropagation();
     if (service?.provider?._id) {
       navigate(`/provider/${service.provider._id}`);
     }
@@ -31,12 +31,13 @@ export default function MarketplaceServiceCard({ service }) {
     <MarketplaceCardShell
       onClick={handleCardClick}
       sx={{
-        maxWidth: "100%",
         cursor: "pointer",
-        transition: "0.2s ease",
+        transition: "all 0.25s ease",
+        borderRadius: 2,
+
         "&:hover": {
-          transform: "translateY(-3px)",
-          boxShadow: 4,
+          transform: "translateY(-4px)",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
         },
       }}
     >
@@ -51,19 +52,24 @@ export default function MarketplaceServiceCard({ service }) {
           alignItems="center"
           onClick={handleProviderClick}
           sx={{
-            cursor: "pointer",
+            cursor: service?.provider?._id ? "pointer" : "default",
             width: "fit-content",
             borderRadius: 2,
-            px: 0.5,
+            px: 0.6,
             py: 0.3,
-            transition: "0.2s",
+            transition: "0.2s ease",
+
             "&:hover": {
-              backgroundColor: "action.hover",
+              backgroundColor: service?.provider?._id
+                ? "action.hover"
+                : "transparent",
             },
           }}
         >
           <Avatar
-            src={service?.provider?.user?.baseProfile?.profileAvatar?.file?.url}
+            src={
+              service?.provider?.user?.baseProfile?.profileAvatar?.file?.url
+            }
             sx={{
               width: 36,
               height: 36,
@@ -111,19 +117,24 @@ export default function MarketplaceServiceCard({ service }) {
           <RatingBadge rating={service.ratingAverage} />
 
           <Button
-              onClick={handleBook}
-              size="small"
-              variant="contained"
-              sx={{
-                px: 2.5,
-                py: 0.8,
-                borderRadius: 2,
-                textTransform: "none",
-                fontWeight: 600,
-                fontSize: 12,
-              }}
-            >
-              Book Service
+            onClick={handleBook}
+            size="small"
+            variant="contained"
+            sx={{
+              px: 2.2,
+              py: 0.7,
+              borderRadius: 2,
+              textTransform: "none",
+              fontWeight: 600,
+              fontSize: 12,
+
+              transition: "0.2s ease",
+              "&:hover": {
+                transform: "scale(1.03)",
+              },
+            }}
+          >
+            Book Service
           </Button>
         </MetaRow>
       </MarketplaceCardContent>

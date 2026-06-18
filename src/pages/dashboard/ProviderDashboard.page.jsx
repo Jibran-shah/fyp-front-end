@@ -6,6 +6,7 @@ import MasterDetailLayout from "../../components/common/layout/master-detail/Mas
 
 import DashboardHeader from "../../components/page/dashboard/DashboardHeader";
 import DashboardStats from "../../components/page/dashboard/DashboardStats";
+import DashboardActions from "../../components/page/dashboard/DashboardActions";
 
 export default function ProviderDashboardPage() {
   const [selected, setSelected] = useState(null);

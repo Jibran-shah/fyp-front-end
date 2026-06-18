@@ -1,24 +1,86 @@
-import { Paper, Stack, Typography, Box, Button } from "@mui/material";
+import {
+  Paper,
+  Stack,
+  Typography,
+  Box,
+  Button,
+  Chip,
+} from "@mui/material";
 
-export default function PaymentTransactionCard() {
+export default function PaymentTransactionCard({
+  payment,
+  onView,
+}) {
+  const {
+    id,
+    status,
+    amount,
+    currency = "PKR",
+  } = payment;
+
   return (
-    <Paper sx={{ p: 2 }}>
-      <Stack direction="row" justifyContent="space-between">
+    <Paper
+      elevation={1}
+      sx={{
+        p: 2,
+        borderRadius: 2,
+      }}
+    >
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        spacing={2}
+      >
         <Box>
-          <Typography fontWeight={600}>
-            Transaction #123
+          <Typography
+            variant="subtitle1"
+            fontWeight={600}
+          >
+            Transaction #{id}
           </Typography>
 
-          <Typography variant="body2">
-            Status: Pending
-          </Typography>
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            sx={{ mt: 0.5 }}
+          >
+            <Typography
+              variant="body2"
+              color="text.secondary"
+            >
+              Status:
+            </Typography>
 
-          <Typography variant="body2">
-            Amount: 2500
+            <Chip
+              size="small"
+              label={status}
+              color={
+                status === "completed"
+                  ? "success"
+                  : status === "pending"
+                  ? "warning"
+                  : status === "failed"
+                  ? "error"
+                  : "default"
+              }
+            />
+          </Stack>
+
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ mt: 0.5 }}
+          >
+            Amount: {currency} {amount}
           </Typography>
         </Box>
 
-        <Button variant="outlined">
+        <Button
+          variant="outlined"
+          onClick={() => onView?.(payment)}
+        >
           View
         </Button>
       </Stack>

@@ -6,7 +6,7 @@ import { apiClient } from "../apiClient";
 export const getMyBuyerOrders = async (params) => {
   console.log("[getMyBuyerOrders] params:", params);
 
-  const res = await apiClient.get("/buyer-orders/my", {
+  const res = await apiClient.get("/buyerOrders/my", {
     params,
   });
 
@@ -26,7 +26,7 @@ export const getBuyerOrderById = async (buyerOrderId) => {
   );
 
   const res = await apiClient.get(
-    `/buyer-orders/${buyerOrderId}`
+    `/buyerOrders/${buyerOrderId}`
   );
 
   console.log("[getBuyerOrderById] response:", res);
@@ -45,7 +45,7 @@ export const cancelBuyerOrder = async (buyerOrderId) => {
   );
 
   const res = await apiClient.patch(
-    `/buyer-orders/${buyerOrderId}/cancel`
+    `/buyerOrders/${buyerOrderId}/cancel`
   );
 
   console.log("[cancelBuyerOrder] response:", res);

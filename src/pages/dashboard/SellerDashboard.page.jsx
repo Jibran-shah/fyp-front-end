@@ -4,11 +4,23 @@ import { Box } from "@mui/material";
 
 import MasterDetailLayout from "../../components/common/layout/master-detail/MasterDetailLayout";
 
+import DashboardActions from "../../components/page/dashboard/DashboardActions";
 import DashboardHeader from "../../components/page/dashboard/DashboardHeader";
 import DashboardStats from "../../components/page/dashboard/DashboardStats";
 
+/* ORDERS */
+import SellerOrdersDashboardView from "../../components/page/orders/sellerOrders/SellerDashboardOrdersView";
+import SellerOrderDetailDashboardView from "../../components/page/orders/sellerOrders/SellerDashboardOrderDetailsView";
+
+/* WALLET */
+import SellerWalletDashboardView from "../../components/page/wallet/WalletDashboardView";
+
+/* PRODUCTS */
+import SellerProductsDashboardView from "../../components/page/products/SellerProductsDashboardView";
+
 export default function SellerDashboardPage() {
   const [selected, setSelected] = useState(null);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   const actions = [
     {
@@ -18,13 +30,24 @@ export default function SellerDashboardPage() {
     },
     {
       label: "My Products",
-      path: "/seller/products",
       description: "Manage your product inventory",
+      component: <SellerProductsDashboardView />,
     },
     {
       label: "Orders",
-      path: "/seller/orders",
       description: "View customer orders",
+      component: (
+        <SellerOrdersDashboardView
+          onSelectOrder={(id) =>
+            setSelectedOrderId(id)
+          }
+        />
+      ),
+    },
+    {
+      label: "Wallet",
+      description: "Manage earnings & withdrawals",
+      component: <SellerWalletDashboardView />,
     },
     {
       label: "Chats",
@@ -41,11 +64,12 @@ export default function SellerDashboardPage() {
 
   return (
     <MasterDetailLayout
-      hasSelection={!!selected}
+      hasSelection={!!selected || !!selectedOrderId}
       sidebar={(openMain) => (
         <DashboardActions
           actions={actions}
           onSelectAction={(item) => {
+            setSelectedOrderId(null);
             setSelected(item);
             openMain?.();
           }}
@@ -53,35 +77,40 @@ export default function SellerDashboardPage() {
       )}
       main={
         <Box sx={{ p: 2 }}>
-          {/* Header */}
-          <DashboardHeader
-            title={
-              selected?.label || "Seller Dashboard"
-            }
-            name="John Doe"
-            roles={["seller"]}
-          />
+          {/* ORDER DETAIL (highest priority) */}
+          {selectedOrderId ? (
+            <SellerOrderDetailDashboardView
+              orderId={selectedOrderId}
+              onBack={() => setSelectedOrderId(null)}
+            />
+          ) : selected?.component ? (
+            selected.component
+          ) : (
+            <>
+              <DashboardHeader
+                title="Seller Dashboard"
+                name="John Doe"
+                roles={["seller"]}
+              />
 
-          {/* Stats */}
-          <DashboardStats
-            title="Business Overview"
-            stats={[
-              { label: "Products", value: 0 },
-              { label: "Orders", value: 0 },
-              { label: "Revenue", value: "₨0" },
-            ]}
-          />
-
-          {/* Optional selected description */}
-          {selected?.description && (
-            <Box
-              sx={{
-                mt: 2,
-                color: "text.secondary",
-              }}
-            >
-              {selected.description}
-            </Box>
+              <DashboardStats
+                title="Business Overview"
+                stats={[
+                  {
+                    label: "Products",
+                    value: 0,
+                  },
+                  {
+                    label: "Orders",
+                    value: 0,
+                  },
+                  {
+                    label: "Revenue",
+                    value: "₨0",
+                  },
+                ]}
+              />
+            </>
           )}
         </Box>
       }

@@ -6,9 +6,9 @@ import {
   createManualTransaction,
   getMyWalletTransactions,
   getWalletTransactionById,
-} from "../../../api/modules/wallet/walletTransactions.service";
+} from "../../../services/wallet/wallet.service";
 
-import { getMyWallet } from "../../../api/modules/wallet/wallet.service";
+import { getMyWallet } from "../../../services/wallet/wallet.service";
 
 /* -------------------- CREATE MANUAL TRANSACTION -------------------- */
 export const useCreateManualTransaction = () => {

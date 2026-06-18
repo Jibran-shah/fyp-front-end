@@ -29,7 +29,6 @@ import ServiceDetailsPage from "../pages/services/ServiceDetails.page";
 import CreateProfilePage from "../pages/profile/CreateProfile.page";
 import CartPage from "../pages/cart/CartPage";
 
-import ChatPage from "../pages/chat/Chat.page";
 import ChatsPage from "../pages/chat/Chats.page"
 
 
@@ -56,6 +55,8 @@ import ServicesSearchPage from "../pages/services/ServicesSearch.page";
 import ProductUpdatePage from "../pages/products/ProductUpdate.page";
 import EditServicePage from "../pages/services/EditService.page";
 import MapDemo from "../pages/MapDemo.page";
+
+import SellerOrdersPage from "../pages/orders/sellerOrders/SellerOrders.page"
 
 
 export default function AppRoutes() {
@@ -133,15 +134,14 @@ export default function AppRoutes() {
         />
 
         <Route path="/chats" element={<ChatsPage />} />
-        <Route path="/chats/:id" element={<ChatPage />} />
-
 
         <Route path="/category/create" element={<CategoryCreatePage/>}/>
 
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
       </Route>
 
-      {/* FALLBACK */}
+      <Route path="seller/orders" element={<SellerOrdersPage/>}/>
+
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

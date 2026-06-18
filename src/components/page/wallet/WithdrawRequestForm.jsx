@@ -11,7 +11,7 @@ import {
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
-import { useCreateWithdrawRequest } from "../../hooks/api/withdraw/withdraw.hooks";
+import { useCreateWithdrawRequest } from "../../../hooks/api/withdraw/withdraw.hooks";
 
 export default function WithdrawRequestForm({
   walletId,

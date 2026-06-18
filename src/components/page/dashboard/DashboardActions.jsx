@@ -3,8 +3,27 @@ import { useNavigate } from "react-router-dom";
 
 import { ActionButton } from "../../common/ActionButton";
 
-export default function DashboardActions({ actions = [] }) {
+export default function DashboardActions({
+  actions = [],
+  onSelectAction,
+}) {
   const navigate = useNavigate();
+
+  const handleClick = (action) => {
+    // Dashboard view
+    if (action.component) {
+      onSelectAction?.(action);
+      return;
+    }
+
+    // Navigation action
+    if (action.path) {
+      navigate(action.path);
+      return;
+    }
+
+    onSelectAction?.(action);
+  };
 
   return (
     <Paper
@@ -14,15 +33,16 @@ export default function DashboardActions({ actions = [] }) {
         border: "1px solid",
         borderColor: "divider",
         borderRadius: 3,
+        width: 280,
       }}
     >
-      <Stack direction="row" spacing={2} flexWrap="wrap">
-        {actions.map((a) => (
+      <Stack spacing={2}>
+        {actions.map((action) => (
           <ActionButton
-            key={a.label}
-            label={a.label}
-            icon={a.icon}
-            onClick={() => navigate(a.path)}
+            key={action.label}
+            label={action.label}
+            icon={action.icon}
+            onClick={() => handleClick(action)}
           />
         ))}
       </Stack>

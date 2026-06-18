@@ -1,14 +1,12 @@
 import { Typography, Stack } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 
-import SellerOrderCard from "../../../components/page/orders/sellerOrders/SellerOrderCard";
-import PageContainer from "../../../components/common/layout/pageContainer/PageContainer";
+import SellerOrderCard from "./SellerOrderCard";
 
-import { useMySellerOrders } from "../../../hooks/api/sellerOrders/sellerOrders.hooks";
+import { useMySellerOrders } from "../../../../hooks/api/sellerOrders/sellerOrders.hooks";
 
-export default function SellerOrdersPage() {
-  const navigate = useNavigate();
-
+export default function SellerOrdersDashboardView({
+  onSelectOrder,
+}) {
   const {
     data: orders = [],
     isLoading,
@@ -17,22 +15,22 @@ export default function SellerOrdersPage() {
 
   if (isLoading) {
     return (
-      <PageContainer>
-        <Typography>Loading orders...</Typography>
-      </PageContainer>
+      <Typography>
+        Loading orders...
+      </Typography>
     );
   }
 
   if (error) {
     return (
-      <PageContainer>
-        <Typography>Error loading orders.</Typography>
-      </PageContainer>
+      <Typography>
+        Error loading orders.
+      </Typography>
     );
   }
 
   return (
-    <PageContainer>
+    <>
       <Typography variant="h5" mb={2}>
         My Seller Orders
       </Typography>
@@ -48,12 +46,12 @@ export default function SellerOrdersPage() {
               key={order._id}
               order={order}
               onClick={() =>
-                navigate(`/seller-orders/${order._id}`)
+                onSelectOrder(order._id)
               }
             />
           ))
         )}
       </Stack>
-    </PageContainer>
+    </>
   );
 }

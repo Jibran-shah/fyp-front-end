@@ -80,7 +80,7 @@ export const getMySellerProducts = async () => {
 
     console.log("[getMySellerProducts] Response:", res.data);
 
-    return res.data.data;
+    return res.data;
   } catch (error) {
     console.error("[getMySellerProducts] Error:", error);
     throw error;
